@@ -1,6 +1,7 @@
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { useTheme } from '@/ui/useTheme';
 
 export default function RootLayout() {
@@ -10,9 +11,12 @@ export default function RootLayout() {
       <StatusBar style="light" hidden={t.name === 'night'} />
       <Stack
         screenOptions={{
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: t.color.sky },
-          headerTintColor: t.color.text,
+          header: ({ options, navigation }) => (
+            <ScreenHeader
+              title={options.title ?? ''}
+              onBack={() => (navigation.canGoBack() ? navigation.goBack() : router.replace('/'))}
+            />
+          ),
           contentStyle: { backgroundColor: t.color.sky },
         }}
       >

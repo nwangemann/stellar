@@ -9,8 +9,10 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "Stellar shows the sky overlay on top of your camera view."
-      }
+        "NSCameraUsageDescription": "Stellar shows the sky overlay on top of your camera view.",
+        "UIViewControllerBasedStatusBarAppearance": false
+      },
+      "bundleIdentifier": "com.nate.stellar"
     },
     "android": {
       "adaptiveIcon": {
