@@ -1,13 +1,8 @@
-import type { SkyObject } from '@/core/catalog/mockSky';
-import type { InfoCard } from '@/core/layers/types';
+import type { SkyObject } from '@/core/catalog/types';
+import type { InfoCard, Target } from '@/core/layers/types';
+import { starFacts } from '@/features/stars/facts';
 
 export function skyCard(o: SkyObject): InfoCard {
-  return {
-    title: o.name,
-    rows: [
-      { label: 'Altitude', value: `${o.position.alt.toFixed(1)}°` },
-      { label: 'Azimuth', value: `${o.position.az.toFixed(1)}°` },
-      { label: 'Magnitude', value: o.magnitude.toFixed(1) },
-    ],
-  };
+  return { title: o.name, rows: starFacts(o.id).slice(0, 3) };
 }
+export const starTarget = (o: SkyObject): Target => ({ kind: 'star', id: o.id, name: o.name });

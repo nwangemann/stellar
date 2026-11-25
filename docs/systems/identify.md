@@ -1,3 +1,3 @@
-# Identify mode
+# Stars mode
 
-Layer plugin. Selects stars brighter than magnitude 5. Placeholder content.
+Layer plugin, id `identify`. Selects stars above the horizon brighter than magnitude 4.5. The card opens the star screen; see [stars](stars.md).

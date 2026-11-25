@@ -1,7 +1,8 @@
-import { View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useCameraPermission } from '@/services/camera/CameraBackdrop';
 import { useSettings } from '@/state/settings';
 import { Chip } from '@/ui/components/Chip';
+import { LookPicker } from '@/ui/skins/LookPicker';
 import { Text } from '@/ui/components/Text';
 import { useTheme } from '@/ui/useTheme';
 
@@ -14,7 +15,9 @@ export default function Settings() {
     set({ cameraBackdrop: hasPermission || (await requestPermission()) });
   };
   return (
-    <View style={{ flex: 1, padding: t.space.lg, gap: t.space.md, alignItems: 'flex-start' }}>
+    <ScrollView
+      contentContainerStyle={{ padding: t.space.lg, gap: t.space.md, alignItems: 'flex-start' }}
+    >
       <Chip
         label="Night vision (red)"
         selected={nightMode}
@@ -24,6 +27,7 @@ export default function Settings() {
       <Text muted size="caption">
         Drag to look around. Live sensor tracking arrives with the core engine.
       </Text>
-    </View>
+      <LookPicker />
+    </ScrollView>
   );
 }

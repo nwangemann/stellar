@@ -1,4 +1,3 @@
-import { createMockSky } from '../catalog/mockSky';
 import { applyDrag, INITIAL_POSE } from '../pose/pose';
 import { deg, px } from '../units';
 import { hitTest, project, type Viewport } from './projection';
@@ -36,8 +35,4 @@ test('hit test picks the closest, but keeps the locked target a little longer', 
   expect(hitTest(sky, pose, view, 44, null)!.object.id).toBe('near');
   expect(hitTest(sky, pose, view, 44, 'far')!.object.id).toBe('far');
   expect(hitTest(sky, pose, view, 2, null)).toBeNull();
-});
-test('the mock sky is deterministic and above the horizon', () => {
-  expect(createMockSky()).toEqual(createMockSky());
-  expect(createMockSky().every((o) => o.position.alt >= 0)).toBe(true);
 });

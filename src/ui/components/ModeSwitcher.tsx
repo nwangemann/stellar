@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { useTheme } from '../useTheme';
 import { Chip } from './Chip';
 
 type Props<T extends string> = {
@@ -11,6 +12,7 @@ type Props<T extends string> = {
 
 /** Camera-style strip: tap a mode, or swipe to move to its neighbour. */
 export function ModeSwitcher<T extends string>({ modes, value, onChange }: Props<T>) {
+  const t = useTheme();
   const swipe = useMemo(
     () =>
       Gesture.Pan()
@@ -25,7 +27,14 @@ export function ModeSwitcher<T extends string>({ modes, value, onChange }: Props
   );
   return (
     <GestureDetector gesture={swipe}>
-      <View accessibilityRole="tablist" style={{ flexDirection: 'row', justifyContent: 'center' }}>
+      <View
+        accessibilityRole="tablist"
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          gap: t.skin === 'glass' ? t.space.sm : 0,
+        }}
+      >
         {modes.map((m) => (
           <Chip
             key={m.id}

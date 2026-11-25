@@ -12,10 +12,10 @@ flowchart LR
 ```
 
 - `src/core`: pure TypeScript. ESLint blocks React, Expo and app imports.
-- `src/features`: one folder per feature. Modes implement `LayerPlugin`.
+- `src/features`: one folder per feature. Modes implement `LayerPlugin`, whose `target` says whether a lock means a star or a constellation.
 - `src/services`: adapters around native modules, with `.web` variants.
 - `src/ui`: tokens and components. `src/state`: Zustand.
 - `app`: thin Expo Router routes.
 
 Pose lives in a Reanimated shared value so it never triggers React renders.
-Until phase 5 the sky is mock data and pose comes from dragging.
+The sky comes from bundled data in `src/data` (ADR 13). Pose still comes from dragging.

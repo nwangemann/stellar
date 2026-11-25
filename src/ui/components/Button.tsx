@@ -1,4 +1,5 @@
 import { Pressable } from 'react-native';
+import { SkinSurface } from '../skins/SkinSurface';
 import { useTheme } from '../useTheme';
 import { Text } from './Text';
 
@@ -12,6 +13,31 @@ type Props = {
 export function Button({ label, onPress, variant = 'primary', disabled = false }: Props) {
   const t = useTheme();
   const primary = variant === 'primary';
+  if (t.skin !== 'default')
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
+        disabled={disabled}
+        onPress={onPress}
+      >
+        {({ pressed }) => (
+          <SkinSurface kind={variant} pressed={pressed} disabled={disabled}>
+            <Text
+              style={{
+                color: primary && !disabled ? t.color.onAccent : t.color.text,
+                opacity: disabled ? 0.65 : 1,
+                fontWeight: '600',
+                textAlign: 'center',
+                ...(t.skin === 'starship' ? { letterSpacing: 1.2 } : null),
+              }}
+            >
+              {label}
+            </Text>
+          </SkinSurface>
+        )}
+      </Pressable>
+    );
   return (
     <Pressable
       accessibilityRole="button"

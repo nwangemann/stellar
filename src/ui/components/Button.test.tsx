@@ -7,13 +7,13 @@ jest.mock('@/services/storage/settingsStorage', () => ({
 
 test('a disabled button does not fire', async () => {
   const onPress = jest.fn();
-  await render(<Button label="Capture" disabled onPress={onPress} />);
-  await fireEvent.press(screen.getByText('Capture'));
+  await render(<Button label="Identify" disabled onPress={onPress} />);
+  await fireEvent.press(screen.getByText('Identify'));
   expect(onPress).not.toHaveBeenCalled();
 });
 test('an enabled button fires', async () => {
   const onPress = jest.fn();
-  await render(<Button label="Capture" onPress={onPress} />);
-  await fireEvent.press(screen.getByText('Capture'));
+  await render(<Button label="Identify" onPress={onPress} />);
+  await fireEvent.press(screen.getByText('Identify'));
   expect(onPress).toHaveBeenCalledTimes(1);
 });

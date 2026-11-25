@@ -12,6 +12,7 @@ export function Text({ size = 'body', muted, style, ...rest }: Props) {
       style={[
         {
           color,
+          ...(t.font ? { fontFamily: t.font } : null),
           fontSize: t.type[size],
           fontWeight: size === 'display' || size === 'title' ? '600' : '400',
         },

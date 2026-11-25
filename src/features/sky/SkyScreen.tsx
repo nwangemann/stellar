@@ -5,25 +5,28 @@ import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { createMockSky } from '@/core/catalog/mockSky';
+import type { Target } from '@/core/layers/types';
 import { applyDrag, INITIAL_POSE, type Pose } from '@/core/pose/pose';
 import type { Viewport } from '@/core/projection/projection';
 import { deg, px } from '@/core/units';
 import { useFocusLock } from '@/features/focus/useFocusLock';
 import { capture } from '@/features/logbook/capture';
-import { CameraBackdrop } from '@/services/camera/CameraBackdrop';
+import { CameraBackdrop, useCameraAvailable } from '@/services/camera/CameraBackdrop';
 import { useSettings } from '@/state/settings';
 import { Button } from '@/ui/components/Button';
+import { FactRow } from '@/ui/components/FactRow';
 import { GlassPanel } from '@/ui/components/GlassPanel';
 import { ModeSwitcher } from '@/ui/components/ModeSwitcher';
 import { Reticle, RETICLE_SIZE } from '@/ui/components/Reticle';
 import { Sheet } from '@/ui/components/Sheet';
 import { Text } from '@/ui/components/Text';
+import { Backdrop } from '@/ui/skins/Backdrop';
+import { SkyFrame } from '@/ui/skins/SkyFrame';
 import { useTheme } from '@/ui/useTheme';
 import { pluginFor, PLUGINS } from './plugins';
 import { SkyLayer } from './SkyLayer';
+import { useSky } from './useSky';
 
-const SKY = createMockSky();
 const FOV = deg(60);
 
 const tapHaptic = () => {
@@ -35,6 +38,7 @@ export function SkyScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const focused = useIsFocused();
+  const cameraAvailable = useCameraAvailable();
   const { width, height } = useWindowDimensions();
   const { mode, cameraBackdrop, set } = useSettings();
   const [message, setMessage] = useState<string | null>(null);
@@ -45,14 +49,15 @@ export function SkyScreen() {
     return () => clearTimeout(timer);
   }, [message]);
 
+  const { sky, demo } = useSky();
   const plugin = pluginFor(mode);
   const view: Viewport = useMemo(
     () => ({ width: px(width), height: px(height), horizontalFov: FOV }),
     [width, height],
   );
-  const objects = useMemo(() => plugin.draw(SKY), [plugin]);
-  const lines = useMemo(() => plugin.lines(SKY), [plugin]);
-  const selectable = useMemo(() => plugin.selectable(SKY), [plugin]);
+  const objects = useMemo(() => plugin.draw(sky), [plugin, sky]);
+  const lines = useMemo(() => plugin.lines(sky), [plugin, sky]);
+  const selectable = useMemo(() => plugin.selectable(sky), [plugin, sky]);
 
   const pose = useSharedValue<Pose>(INITIAL_POSE);
   const { locked, offsetX, offsetY } = useFocusLock(selectable, pose, view, tapHaptic);
@@ -70,26 +75,36 @@ export function SkyScreen() {
   }));
 
   const onMode = useCallback((id: typeof mode) => set({ mode: id }), [set]);
+  const target = locked ? plugin.target(locked) : null;
   const onCapture = async () => {
-    if (!locked) return;
+    if (!target) return;
     try {
-      await capture(locked, pose.value);
-      setMessage(`Saved ${locked.name}`);
+      await capture(target, pose.value);
+      setMessage(`Identified ${target.name}`);
     } catch {
       setMessage('Could not save. Try again.');
     }
   };
+  const explore = ({ kind, id }: Target) =>
+    router.push({
+      pathname: kind === 'star' ? '/star/[id]' : '/constellation/[id]',
+      params: { id },
+    });
   const card = locked ? plugin.card(locked) : null;
 
   return (
     <View style={[styles.fill, { backgroundColor: t.color.sky }]}>
       {cameraBackdrop ? <CameraBackdrop isActive={focused} /> : null}
+      {t.skin === 'default' ? null : (
+        <Backdrop active={focused} pose={pose} overCamera={cameraBackdrop && cameraAvailable} />
+      )}
       <GestureDetector gesture={drag}>
         <View style={styles.fill}>
           <SkyLayer objects={objects} lines={lines} pose={pose} view={view} />
         </View>
       </GestureDetector>
 
+      {t.skin === 'default' ? null : <SkyFrame skin={t.skin} locked={!!locked} />}
       <Animated.View
         style={[
           styles.reticle,
@@ -102,8 +117,8 @@ export function SkyScreen() {
 
       <View style={[styles.top, { top: insets.top + t.space.sm, paddingHorizontal: t.space.lg }]}>
         <Button variant="quiet" label="Logbook" onPress={() => router.push('/logbook')} />
-        <Text size="caption" muted>
-          Mock stars
+        <Text size="caption" muted={t.skin === 'default'}>
+          {demo ? 'Demo location' : 'Your sky'}
         </Text>
         <Button variant="quiet" label="Settings" onPress={() => router.push('/settings')} />
       </View>
@@ -114,15 +129,19 @@ export function SkyScreen() {
           { bottom: insets.bottom + t.space.lg, paddingHorizontal: t.space.lg, gap: t.space.md },
         ]}
       >
-        {card ? (
-          <Sheet key={locked?.id}>
+        {card && target ? (
+          <Sheet key={target.id}>
             <Text size="title">{card.title}</Text>
             {card.rows.map((r) => (
-              <View key={r.label} style={styles.row}>
-                <Text muted>{r.label}</Text>
-                <Text>{r.value}</Text>
-              </View>
+              <FactRow key={r.label} {...r} />
             ))}
+            <View style={{ marginTop: t.space.md }}>
+              <Button
+                variant="quiet"
+                label={target.kind === 'star' ? 'Star details' : 'Explore constellation'}
+                onPress={() => explore(target)}
+              />
+            </View>
           </Sheet>
         ) : null}
         {message ? (
@@ -130,9 +149,9 @@ export function SkyScreen() {
             {message}
           </Text>
         ) : null}
-        <GlassPanel style={{ padding: t.space.sm, gap: t.space.sm }}>
+        <GlassPanel dock style={{ padding: t.space.sm, gap: t.space.sm }}>
           <ModeSwitcher modes={PLUGINS} value={mode} onChange={onMode} />
-          <Button label="Capture" disabled={!locked} onPress={() => void onCapture()} />
+          <Button label="Identify" disabled={!locked} onPress={() => void onCapture()} />
         </GlassPanel>
       </View>
     </View>
@@ -152,6 +171,5 @@ const styles = StyleSheet.create({
     pointerEvents: 'box-none',
   },
   bottom: { position: 'absolute', left: 0, right: 0, pointerEvents: 'box-none' },
-  row: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 },
   center: { textAlign: 'center' },
 });

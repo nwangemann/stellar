@@ -7,3 +7,4 @@ package-lock.json
 AGENTS.md
 .claude
 tsconfig.json
+src/data/*.json

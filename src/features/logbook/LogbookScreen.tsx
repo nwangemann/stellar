@@ -29,7 +29,7 @@ export function LogbookScreen() {
   );
   return (
     <FlatList
-      style={{ backgroundColor: t.color.sky }}
+      style={{ backgroundColor: t.skin === 'default' ? t.color.sky : 'transparent' }}
       contentContainerStyle={{ padding: t.space.lg, gap: t.space.md }}
       data={items}
       keyExtractor={(c) => c.id}
@@ -37,7 +37,7 @@ export function LogbookScreen() {
         <Text muted>
           {failed
             ? 'Could not open the logbook.'
-            : 'Nothing captured yet. Lock on to a star and tap Capture.'}
+            : 'Nothing identified yet. Lock on to a star and tap Identify.'}
         </Text>
       }
       renderItem={({ item }) => (

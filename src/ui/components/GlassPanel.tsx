@@ -1,8 +1,10 @@
-import { View, type ViewProps } from 'react-native';
+import { View } from 'react-native';
+import { SkinPanel, type PanelProps } from '../skins/SkinPanel';
 import { useTheme } from '../useTheme';
 
-export function GlassPanel({ style, ...rest }: ViewProps) {
+export function GlassPanel({ style, dock, ...rest }: PanelProps) {
   const t = useTheme();
+  if (t.skin !== 'default') return <SkinPanel style={style} dock={dock} {...rest} />;
   return (
     <View
       {...rest}
