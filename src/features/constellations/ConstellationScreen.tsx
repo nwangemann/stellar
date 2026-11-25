@@ -2,6 +2,8 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
 import { constellationById, figureLines, starsIn } from '@/core/catalog/catalog';
+import { FindInSky } from '@/features/find/FindButton';
+import { detailsRoute } from '@/features/sky/details';
 import { Chip } from '@/ui/components/Chip';
 import { FactRow } from '@/ui/components/FactRow';
 import { GlassPanel } from '@/ui/components/GlassPanel';
@@ -19,7 +21,7 @@ export function ConstellationScreen() {
   const t = useTheme();
   const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, at } = useLocalSearchParams<{ id: string; at?: string }>();
   const [tab, setTab] = useState<Tab>('Overview');
   const [chosen, setChosen] = useState(0);
   const c = constellationById(id);
@@ -36,6 +38,7 @@ export function ConstellationScreen() {
   return (
     <ScrollView contentContainerStyle={{ padding: t.space.lg, gap: t.space.md }}>
       <Stack.Screen options={{ title: c.name }} />
+      <FindInSky target={{ kind: 'constellation', id, name: c.name }} at={at} />
       <View accessibilityRole="tablist" style={{ flexDirection: 'row' }}>
         {tabs.map((label) => (
           <Chip
@@ -85,7 +88,7 @@ export function ConstellationScreen() {
               key={s.id}
               variant="quiet"
               label={`${s.name}, magnitude ${s.magnitude.toFixed(1)}`}
-              onPress={() => router.push({ pathname: '/star/[id]', params: { id: s.id } })}
+              onPress={() => router.push(detailsRoute({ kind: 'star', id: s.id }, at))}
             />
           ))}
         </View>

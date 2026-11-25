@@ -6,6 +6,12 @@ export async function requestLocation(): Promise<boolean> {
   return (await Location.requestForegroundPermissionsAsync()).granted;
 }
 
+/** Whether location is allowed; null until known. The second value prompts if it still can. */
+export function useLocationPermission() {
+  const [status, request] = Location.useForegroundPermissions();
+  return [status?.granted ?? null, async () => (await request()).granted] as const;
+}
+
 /** Last known position only, so capture never waits on GPS and never prompts. */
 export async function lastObserver(): Promise<Observer | null> {
   try {

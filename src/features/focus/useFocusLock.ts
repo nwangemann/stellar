@@ -6,7 +6,7 @@ import {
   type SharedValue,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
-import type { SkyObject } from '@/core/catalog/types';
+import type { SkyMark, SkyTurn } from '@/core/catalog/types';
 import { stepLock, UNLOCKED, type LockState } from '@/core/focus/lock';
 import type { Pose } from '@/core/pose/pose';
 import { hitTest, type Viewport } from '@/core/projection/projection';
@@ -14,10 +14,13 @@ import { hitTest, type Viewport } from '@/core/projection/projection';
 const RADIUS = 44;
 
 export function useFocusLock(
-  selectable: readonly SkyObject[],
+  targets: readonly SkyMark[],
+  turn: SharedValue<SkyTurn>,
   pose: SharedValue<Pose>,
   view: Viewport,
   onLock: () => void,
+  /** Preferred over nearer targets, so a neighbour cannot take its place. */
+  wantedId: string | null,
 ) {
   const [lockedId, setLockedId] = useState<string | null>(null);
   const lock = useSharedValue<LockState>(UNLOCKED);
@@ -35,8 +38,8 @@ export function useFocusLock(
   useFrameCallback((frame) => {
     'worklet';
     const before = lock.value;
-    const hit = hitTest(selectable, pose.value, view, RADIUS, before.lockedId);
-    const next = stepLock(before, hit ? hit.object.id : null, frame.timestamp);
+    const hit = hitTest(targets, turn.value, pose.value, view, RADIUS, wantedId ?? before.lockedId);
+    const next = stepLock(before, hit ? hit.id : null, frame.timestamp);
     if (next !== before) lock.value = next;
     if (next.lockedId !== before.lockedId) scheduleOnRN(publish, next.lockedId);
     if (next.lockedId && hit) {
@@ -49,6 +52,6 @@ export function useFocusLock(
     }
   });
 
-  // After a mode change, the next frame re-evaluates the lock against the new selectable set.
-  return { locked: selectable.find((o) => o.id === lockedId) ?? null, offsetX, offsetY };
+  // After a mode change, the next frame re-evaluates the lock against the new targets.
+  return { lockedId: targets.some((m) => m.id === lockedId) ? lockedId : null, offsetX, offsetY };
 }

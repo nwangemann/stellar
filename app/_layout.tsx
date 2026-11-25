@@ -34,8 +34,10 @@ export default function RootLayout() {
       >
         <Stack.Screen name="index" options={{ headerShown: false, title: 'Stellar' }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false, title: 'Welcome' }} />
+        <Stack.Screen name="search" options={{ title: 'Search' }} />
         <Stack.Screen name="logbook" options={{ title: 'Logbook' }} />
         <Stack.Screen name="star/[id]" options={{ presentation: 'modal', title: 'Star' }} />
+        <Stack.Screen name="body/[id]" options={{ presentation: 'modal', title: 'Details' }} />
         <Stack.Screen
           name="constellation/[id]"
           options={{ presentation: 'modal', title: 'Constellation' }}

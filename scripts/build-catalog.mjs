@@ -47,7 +47,8 @@ for (const culture of cultures) {
     const lines = (c.lines ?? []).map((l) => l.filter(Number.isInteger));
     if (culture === 'western')
       constellations.push({
-        id: c.iau,
+        // Stellarium's spelling of TrA differs from HYG's.
+        id: c.iau === 'Tra' ? 'TrA' : c.iau,
         name: c.common_name.native,
         english: c.common_name.english,
         lines,

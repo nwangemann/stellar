@@ -1,5 +1,6 @@
 import { deg, toDeg, toRad, wrap360 } from '../units';
 import type { AltAz, Observer, RaDec } from './coordinates';
+import { altAzVector, EQUATOR_AXES, type Matrix } from './vector';
 
 const DAY_MS = 86_400_000;
 const julianDate = (date: Date) => date.getTime() / DAY_MS + 2440587.5;
@@ -41,4 +42,17 @@ export function toAltAz(p: RaDec, observer: Observer, date: Date): AltAz {
     alt: degrees(Math.atan2(up, Math.hypot(east, north))),
     az: wrap360(degrees(Math.atan2(east, north))),
   };
+}
+
+/** Rotates J2000 equatorial vectors to horizon vectors: `precess` then `toAltAz` in one step. */
+export function skyRotation(observer: Observer, date: Date): Matrix {
+  const column = (p: RaDec) => altAzVector(toAltAz(precess(p, date), observer, date));
+  const x = column(EQUATOR_AXES[0]);
+  const y = column(EQUATOR_AXES[1]);
+  const z = column(EQUATOR_AXES[2]);
+  return [
+    [x[0], y[0], z[0]],
+    [x[1], y[1], z[1]],
+    [x[2], y[2], z[2]],
+  ];
 }

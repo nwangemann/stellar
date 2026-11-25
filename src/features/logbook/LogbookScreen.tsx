@@ -1,6 +1,7 @@
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Pressable } from 'react-native';
+import { detailsRoute } from '@/features/sky/details';
 import { logbook } from '@/services/storage/logbook';
 import type { Capture } from '@/services/storage/logbook.types';
 import { GlassPanel } from '@/ui/components/GlassPanel';
@@ -9,6 +10,8 @@ import { useTheme } from '@/ui/useTheme';
 
 export function LogbookScreen() {
   const t = useTheme();
+  const router = useRouter();
+  const { at } = useLocalSearchParams<{ at?: string }>();
   const [items, setItems] = useState<Capture[]>([]);
   const [failed, setFailed] = useState(false);
   useFocusEffect(
@@ -40,15 +43,32 @@ export function LogbookScreen() {
             : 'Nothing identified yet. Lock on to a star and tap Identify.'}
         </Text>
       }
-      renderItem={({ item }) => (
-        <GlassPanel>
-          <Text size="title">{item.targetName}</Text>
-          <Text muted>{new Date(item.capturedAt).toLocaleString()}</Text>
-          <Text muted>
-            Pointing {item.pose.az.toFixed(0)}° az, {item.pose.alt.toFixed(0)}° alt
-          </Text>
-        </GlassPanel>
-      )}
+      renderItem={({ item }) => {
+        const { target } = item;
+        const panel = (
+          <GlassPanel>
+            <Text size="title">{item.targetName}</Text>
+            <Text muted>{new Date(item.capturedAt).toLocaleString()}</Text>
+            {item.skyTime ? (
+              <Text muted>Sky shown for {new Date(item.skyTime).toLocaleString()}</Text>
+            ) : null}
+            <Text muted>
+              Pointing {item.pose.az.toFixed(0)}° az, {item.pose.alt.toFixed(0)}° alt
+            </Text>
+          </GlassPanel>
+        );
+        if (!target) return panel;
+        return (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityHint="Opens details"
+            onPress={() => router.push(detailsRoute(target, at))}
+            style={({ pressed }) => ({ opacity: pressed && t.skin !== 'glass' ? 0.7 : 1 })}
+          >
+            {panel}
+          </Pressable>
+        );
+      }}
     />
   );
 }

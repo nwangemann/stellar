@@ -2,27 +2,21 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step: 1.4 in [planets](planets.md).**
+**Next step: 7.1 in [transition](transition.md).**
 
 ## Queue
 
 Sizes are rough estimates in steps. A step should fit in one session.
 
-| #   | Task                                  | Steps | Status     | Needs first                           |
-| --- | ------------------------------------- | ----- | ---------- | ------------------------------------- |
-| 1   | [Moon, Sun and planets](planets.md)   | 4     | 3 of 4     | -                                     |
-| 2   | [Real sensors](sensors.md)            | 5     | Ready      | 2.2 needs a rebuild, 2.5 a real phone |
-| 3   | [Simulator tests](simulator-tests.md) | 3     | Needs user | OK to install Java and Maestro        |
-| 4   | [Time travel slider](time-travel.md)  | 2     | Ready      | Better after 1                        |
-| 5   | [Search with an arrow](search.md)     | 3     | Ready      | Better after 1                        |
+| #   | Task                                        | Steps | Status     | Needs first                        |
+| --- | ------------------------------------------- | ----- | ---------- | ---------------------------------- |
+| 3   | [Simulator tests](simulator-tests.md)       | 3     | Needs user | OK to install Java and Maestro     |
+| 7   | [Zoom transition to details](transition.md) | 3     | Ready      | -                                  |
+| 8   | [On a real device](device.md)               | 8     | Last       | Feature work done, user's go-ahead |
 
 ## Small fixes
 
 - 6. Alien visitor: see it on the simulator. It waits during lock-on, so check that it appears often enough. On 2026-11-24 it showed on two launches while a target was locked, which it should not.
-
-## Needs the user
-
-- Device: say which iPhone and iOS version, and do the steps in the [handoff](../handoff.md).
 
 ## Later, not yet prioritized
 
@@ -33,6 +27,7 @@ Sizes are rough estimates in steps. A step should fit in one session.
 
 ## Rules
 
+- Anything that needs a real device, including tuning and calibration, goes in [task 8](device.md) and never holds up other work.
 - A task file holds its goal, its steps as checkboxes, the files each step needs, and how to prove it.
 - Start only steps that are ready. Split a step that will not fit in one session.
 - When a task is done, add a line to the changelog, delete its file and remove its row.

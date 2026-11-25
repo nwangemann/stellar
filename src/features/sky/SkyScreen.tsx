@@ -1,40 +1,66 @@
 import * as Haptics from 'expo-haptics';
 import { useIsFocused, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
+import { MARKS } from '@/core/catalog/sky';
 import type { Target } from '@/core/layers/types';
-import { applyDrag, INITIAL_POSE, type Pose } from '@/core/pose/pose';
+import { dragAlignment } from '@/core/pose/alignment';
+import { applyDrag, facing, INITIAL_POSE, turnStart, type Pose } from '@/core/pose/pose';
+import { coverFieldOfView, OPEN_SKY_FOV } from '@/core/projection/fieldOfView';
 import type { Viewport } from '@/core/projection/projection';
 import { deg, px } from '@/core/units';
+import { FindArrow, FindPanel } from '@/features/find/FindArrow';
 import { useFocusLock } from '@/features/focus/useFocusLock';
 import { capture } from '@/features/logbook/capture';
-import { CameraBackdrop, useCameraAvailable } from '@/services/camera/CameraBackdrop';
+import {
+  CameraBackdrop,
+  useCameraAvailable,
+  useCameraFocalLength,
+} from '@/services/camera/CameraBackdrop';
+import { useFind, type Wanted } from '@/state/find';
 import { useSettings } from '@/state/settings';
-import { Button } from '@/ui/components/Button';
-import { FactRow } from '@/ui/components/FactRow';
-import { GlassPanel } from '@/ui/components/GlassPanel';
-import { IconButton } from '@/ui/components/IconButton';
-import { ModeSwitcher } from '@/ui/components/ModeSwitcher';
 import { Reticle, RETICLE_SIZE } from '@/ui/components/Reticle';
-import { Sheet } from '@/ui/components/Sheet';
 import { Text } from '@/ui/components/Text';
 import { Backdrop } from '@/ui/skins/Backdrop';
 import { SkyFrame } from '@/ui/skins/SkyFrame';
 import { Visitor } from '@/ui/skins/Visitor';
 import { useTheme } from '@/ui/useTheme';
-import { pluginFor, PLUGINS } from './plugins';
+import { AlignPanel, CompassNotice } from './AlignPanel';
+import { Dock, TargetSheet, TopBar } from './Hud';
+import { detailsRoute } from './details';
+import { pluginFor } from './plugins';
 import { SkyLayer } from './SkyLayer';
 import { SunWarning } from './SunWarning';
+import { TimePanel } from './TimePanel';
+import { useSensorPose } from './useSensorPose';
 import { useSky } from './useSky';
 
-const FOV = deg(60);
+const TURN_MS = 800;
+
+/** Dragging before the lock cancels the request. */
+const onDragStart = () => {
+  const { wanted, reached, set } = useFind.getState();
+  if (wanted && !reached) set({ wanted: null });
+};
 
 const tapHaptic = () => {
   if (Platform.OS !== 'web') void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 };
+
+/** Keeps the first of equal plain values, so memoized children see the same object. */
+function useKept<T>(value: T): T {
+  const key = JSON.stringify(value);
+  return useMemo(() => JSON.parse(key) as T, [key]);
+}
 
 export function SkyScreen() {
   const t = useTheme();
@@ -42,9 +68,18 @@ export function SkyScreen() {
   const insets = useSafeAreaInsets();
   const focused = useIsFocused();
   const cameraAvailable = useCameraAvailable();
+  const focalLength = useCameraFocalLength();
   const { width, height } = useWindowDimensions();
-  const { mode, cameraBackdrop, set } = useSettings();
+  const { mode, cameraBackdrop, followPhone, set } = useSettings();
+  const wanted = useFind((s) => s.wanted);
+  const setFind = useFind((s) => s.set);
+  const reached = useFind((s) => s.reached);
+  const wantedId = wanted?.aimId ?? null;
   const [message, setMessage] = useState<string | null>(null);
+  const [alignOpen, setAlignOpen] = useState(false);
+  const [timeOpen, setTimeOpen] = useState(false);
+  const [offsetMs, setOffsetMs] = useState(0);
+  const [aligned, setAligned] = useState(false);
 
   useEffect(() => {
     if (!message) return;
@@ -52,58 +87,168 @@ export function SkyScreen() {
     return () => clearTimeout(timer);
   }, [message]);
 
-  const { sky, demo } = useSky();
+  const { sky, turn, realSun, moment, demo } = useSky(offsetMs);
+  // A ref, so the handlers stay stable while the time moves. Null in the present.
+  const skyTime = useRef<Date | null>(null);
+  useEffect(() => {
+    skyTime.current = offsetMs === 0 ? null : moment.date;
+  }, [offsetMs, moment]);
   const plugin = pluginFor(mode);
+  const cameraOn = cameraBackdrop && cameraAvailable;
+  const fov = cameraOn ? coverFieldOfView(width, height, focalLength) : OPEN_SKY_FOV;
   const view: Viewport = useMemo(
-    () => ({ width: px(width), height: px(height), horizontalFov: FOV }),
-    [width, height],
+    () => ({ width: px(width), height: px(height), horizontalFov: fov }),
+    [width, height, fov],
   );
-  const objects = useMemo(() => plugin.draw(sky), [plugin, sky]);
-  const lines = useMemo(() => plugin.lines(sky), [plugin, sky]);
-  const selectable = useMemo(() => plugin.selectable(sky), [plugin, sky]);
+  const marks = useMemo(() => plugin.draw(MARKS), [plugin]);
+  const lines = useMemo(() => plugin.lines(MARKS), [plugin]);
+  // A string, so the targets keep their identity until the set changes.
+  const targetIds = useMemo(
+    () => sky.flatMap((o) => (plugin.selects(o) || o.id === wantedId ? [o.id] : [])).join(' '),
+    [plugin, sky, wantedId],
+  );
+  const targets = useMemo(() => {
+    const ids = new Set(targetIds.split(' '));
+    return MARKS.filter((m) => ids.has(m.id));
+  }, [targetIds]);
 
   const pose = useSharedValue<Pose>(INITIAL_POSE);
-  const { locked, offsetX, offsetY } = useFocusLock(selectable, pose, view, tapHaptic);
+  const { tracking, accurate, correction } = useSensorPose(pose, followPhone && focused);
+  const aligning = alignOpen && tracking;
+  const { lockedId, offsetX, offsetY } = useFocusLock(
+    targets,
+    turn,
+    pose,
+    view,
+    tapHaptic,
+    wantedId,
+  );
+  const locked = useMemo(() => sky.find((o) => o.id === lockedId) ?? null, [sky, lockedId]);
+
+  useEffect(() => {
+    if (focused) setFind({ following: tracking });
+  }, [focused, tracking, setFind]);
+  // Turns once per request, when the sky is back on screen.
+  const turned = useRef<Wanted | null>(null);
+  useEffect(() => {
+    if (!wanted || !focused || turned.current === wanted) return;
+    turned.current = wanted;
+    set({ mode: wanted.target.kind === 'constellation' ? 'constellations' : 'identify' });
+    const aim = sky.find((o) => o.id === wanted.aimId);
+    if (!aim || tracking || wanted.byArrow) return;
+    const to = facing(aim.position);
+    scheduleOnUI(() => {
+      'worklet';
+      pose.value = turnStart(pose.value, to);
+      // Instant with Reduce Motion, as all timings are by default.
+      pose.value = withTiming({ ...to }, { duration: TURN_MS, easing: Easing.inOut(Easing.cubic) });
+    });
+  }, [wanted, focused, tracking, sky, pose, set]);
+  const leading = wanted && !reached && !aligning && (tracking || wanted.byArrow) ? wanted : null;
+  const wantedMark = useMemo(() => MARKS.find((m) => m.id === wantedId) ?? null, [wantedId]);
+  const wantedUp = sky.some((o) => o.id === wantedId && o.position.alt > 0);
+  const onCancelFind = useCallback(() => setFind({ wanted: null }), [setFind]);
+  // The request lasts as long as its lock, because only it makes a faint star a target.
+  useEffect(() => {
+    if (!wanted) return;
+    if (lockedId === wanted.aimId) setFind({ reached: true });
+    else if (useFind.getState().reached) setFind({ wanted: null });
+  }, [wanted, lockedId, setFind]);
 
   const drag = useMemo(
     () =>
-      Gesture.Pan().onChange((e) => {
-        'worklet';
-        pose.value = applyDrag(pose.value, e.changeX, e.changeY, FOV / width);
-      }),
-    [pose, width],
+      Gesture.Pan()
+        .enabled(!tracking || aligning)
+        .onStart(() => {
+          'worklet';
+          if (aligning) return;
+          scheduleOnRN(onDragStart);
+          // Dragging cannot change roll, so drop any left by the sensors.
+          pose.value = { ...pose.value, roll: deg(0) };
+        })
+        .onChange((e) => {
+          'worklet';
+          if (aligning)
+            correction.value = dragAlignment(
+              correction.value,
+              pose.value,
+              e.changeX,
+              e.changeY,
+              fov / width,
+            );
+          else pose.value = applyDrag(pose.value, e.changeX, e.changeY, fov / width);
+        })
+        .onEnd(() => {
+          'worklet';
+          if (aligning) scheduleOnRN(setAligned, true);
+        }),
+    [pose, correction, width, fov, tracking, aligning],
   );
   const reticleStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: offsetX.value }, { translateY: offsetY.value }],
   }));
 
-  const onMode = useCallback((id: typeof mode) => set({ mode: id }), [set]);
-  const target = locked ? plugin.target(locked) : null;
-  const onCapture = async () => {
-    if (!target) return;
-    try {
-      await capture(target, pose.value);
-      setMessage(`Identified ${target.name}`);
-    } catch {
-      setMessage('Could not save. Try again.');
-    }
-  };
-  const explore = ({ kind, id }: Target) =>
-    router.push({
-      pathname: kind === 'star' ? '/star/[id]' : '/constellation/[id]',
-      params: { id },
-    });
-  const card = locked ? plugin.card(locked) : null;
+  const onMode = useCallback(
+    (id: typeof mode) => {
+      setFind({ wanted: null });
+      set({ mode: id });
+    },
+    [set, setFind],
+  );
+  const card = useMemo(
+    () => (locked ? plugin.card(locked, moment) : null),
+    [plugin, locked, moment],
+  );
+  // Kept the same across refreshes, so the dock does not render again. The card usually is too.
+  const target = useKept(locked ? plugin.target(locked) : null);
+  const shownCard = useKept(card);
+  const onIdentify = useCallback(
+    async (found: Target) => {
+      try {
+        await capture(found, pose.value, skyTime.current);
+        setMessage(`Identified ${found.name}`);
+      } catch {
+        setMessage('Could not save. Try again.');
+      }
+    },
+    [pose],
+  );
+  const onExplore = useCallback(
+    (found: Target) => router.push(detailsRoute(found, skyTime.current?.toISOString())),
+    [router],
+  );
+  const onNow = useCallback(() => setOffsetMs(0), []);
+  // Aligning compares the sky with the real one, so it needs the present.
+  const onAlign = useCallback(() => {
+    setOffsetMs(0);
+    setTimeOpen(false);
+    setAlignOpen((open) => !open);
+  }, []);
+  // Closing returns to the present, so another time is never shown without its label.
+  const onTime = useCallback(() => {
+    setOffsetMs(0);
+    setAlignOpen(false);
+    setTimeOpen((open) => !open);
+  }, []);
+  const onSearch = useCallback(() => {
+    const at = skyTime.current?.toISOString();
+    router.push({ pathname: '/search', params: at ? { at } : {} });
+  }, [router]);
+  const onLogbook = useCallback(() => {
+    const at = skyTime.current?.toISOString();
+    router.push({ pathname: '/logbook', params: at ? { at } : {} });
+  }, [router]);
+  const onSettings = useCallback(() => router.push('/settings'), [router]);
 
   return (
     <View style={[styles.fill, { backgroundColor: t.color.sky }]}>
       {cameraBackdrop ? <CameraBackdrop isActive={focused} /> : null}
       {t.skin === 'default' ? null : (
-        <Backdrop active={focused} pose={pose} overCamera={cameraBackdrop && cameraAvailable} />
+        <Backdrop active={focused} pose={pose} overCamera={cameraOn} />
       )}
       <GestureDetector gesture={drag}>
         <View style={styles.fill}>
-          <SkyLayer objects={objects} lines={lines} pose={pose} view={view} />
+          <SkyLayer marks={marks} lines={lines} turn={turn} pose={pose} view={view} />
         </View>
       </GestureDetector>
 
@@ -123,22 +268,42 @@ export function SkyScreen() {
       <View
         style={[styles.top, { top: insets.top + t.space.sm, right: t.space.lg, gap: t.space.sm }]}
       >
-        {demo ? (
-          <Text size="caption" muted={t.skin === 'default'}>
-            Demo location
-          </Text>
-        ) : null}
-        <IconButton icon="book" label="Logbook" onPress={() => router.push('/logbook')} />
-        <IconButton icon="gear" label="Settings" onPress={() => router.push('/settings')} />
+        <TopBar
+          demo={demo}
+          tracking={tracking}
+          onSearch={onSearch}
+          onTime={onTime}
+          onAlign={onAlign}
+          onLogbook={onLogbook}
+          onSettings={onSettings}
+        />
       </View>
 
       <View
         style={[
-          styles.warning,
-          { top: insets.top + t.space.sm + t.hit + t.space.sm, paddingHorizontal: t.space.lg },
+          styles.upper,
+          {
+            top: insets.top + t.space.sm + t.hit + t.space.sm,
+            paddingHorizontal: t.space.lg,
+            gap: t.space.sm,
+          },
         ]}
       >
-        <SunWarning sky={sky} pose={pose} camera={cameraBackdrop && cameraAvailable} />
+        {leading ? (
+          <FindPanel name={leading.target.name} up={wantedUp} onCancel={onCancelFind} />
+        ) : null}
+        {timeOpen ? (
+          <TimePanel
+            time={moment.date.getTime()}
+            offsetMs={offsetMs}
+            onOffset={setOffsetMs}
+            onNow={onNow}
+          />
+        ) : null}
+        <View style={[styles.warning, { gap: t.space.sm }]}>
+          <SunWarning sun={realSun} pose={pose} camera={cameraOn} />
+          {tracking && !accurate && !aligned && !aligning ? <CompassNotice /> : null}
+        </View>
       </View>
 
       <View
@@ -147,33 +312,29 @@ export function SkyScreen() {
           { bottom: insets.bottom + t.space.lg, paddingHorizontal: t.space.lg, gap: t.space.md },
         ]}
       >
-        {card && target ? (
-          <Sheet key={target.id}>
-            <Text size="title">{card.title}</Text>
-            {card.rows.map((r) => (
-              <FactRow key={r.label} {...r} />
-            ))}
-            {target.kind === 'body' ? null : (
-              <View style={{ marginTop: t.space.md }}>
-                <Button
-                  variant="quiet"
-                  label={target.kind === 'star' ? 'Star details' : 'Explore constellation'}
-                  onPress={() => explore(target)}
-                />
-              </View>
-            )}
-          </Sheet>
+        {shownCard && target && !aligning ? (
+          <TargetSheet key={target.id} card={shownCard} target={target} onExplore={onExplore} />
         ) : null}
         {message ? (
           <Text accessibilityLiveRegion="polite" style={styles.center}>
             {message}
           </Text>
         ) : null}
-        <GlassPanel dock style={{ padding: t.space.sm, gap: t.space.sm }}>
-          <ModeSwitcher modes={PLUGINS} value={mode} onChange={onMode} />
-          <Button label="Identify" disabled={!locked} onPress={() => void onCapture()} />
-        </GlassPanel>
+        {aligning ? (
+          <AlignPanel
+            onReset={() => {
+              correction.set(deg(0));
+              setAligned(false);
+            }}
+            onDone={() => setAlignOpen(false)}
+          />
+        ) : (
+          <Dock mode={mode} onMode={onMode} target={target} onIdentify={onIdentify} />
+        )}
       </View>
+      {leading && wantedMark && wantedUp ? (
+        <FindArrow mark={wantedMark} turn={turn} pose={pose} view={view} />
+      ) : null}
     </View>
   );
 }
@@ -187,7 +348,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     pointerEvents: 'box-none',
   },
-  warning: { position: 'absolute', left: 0, right: 0, pointerEvents: 'none' },
+  upper: { position: 'absolute', left: 0, right: 0, pointerEvents: 'box-none' },
+  warning: { pointerEvents: 'none' },
   bottom: { position: 'absolute', left: 0, right: 0, pointerEvents: 'box-none' },
   center: { textAlign: 'center' },
 });

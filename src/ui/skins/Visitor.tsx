@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 import Animated, {
   Easing,
@@ -23,7 +23,7 @@ let lastVisit: Visit | undefined;
  * A rare, random alien for the Starship look. Mount it only while the sky screen is in front.
  * It stays away while `busy`, and a tap sends it off early.
  */
-export function Visitor({ busy }: { busy: boolean }) {
+export const Visitor = memo(function Visitor({ busy }: { busy: boolean }) {
   const [visit, setVisit] = useState<Visit | null>(null);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export function Visitor({ busy }: { busy: boolean }) {
   }, [busy, visit]);
 
   return visit ? <Guest visit={visit} busy={busy} onGone={() => setVisit(null)} /> : null;
-}
+});
 
 function Guest({ visit, busy, onGone }: { visit: Visit; busy: boolean; onGone: () => void }) {
   const insets = useSafeAreaInsets();

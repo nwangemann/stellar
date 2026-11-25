@@ -1,4 +1,5 @@
-import type { SkyObject } from '../catalog/types';
+import type { Moment } from '../astro/coordinates';
+import type { SkyMark, SkyObject } from '../catalog/types';
 
 export type ModeId = 'identify' | 'constellations' | 'layers';
 
@@ -19,11 +20,11 @@ export interface LayerPlugin {
   readonly id: ModeId;
   readonly label: string;
   /** Objects to draw as points. */
-  draw(sky: readonly SkyObject[]): readonly SkyObject[];
+  draw(marks: readonly SkyMark[]): readonly SkyMark[];
   /** Pairs of objects to join with lines. */
-  lines(sky: readonly SkyObject[]): readonly (readonly [SkyObject, SkyObject])[];
-  /** Objects the reticle may lock on to. */
-  selectable(sky: readonly SkyObject[]): readonly SkyObject[];
+  lines(marks: readonly SkyMark[]): readonly (readonly [SkyMark, SkyMark])[];
+  /** Whether the reticle may lock on to the object while it is above the horizon. */
+  selects(object: SkyObject): boolean;
   target(object: SkyObject): Target;
-  card(object: SkyObject): InfoCard;
+  card(object: SkyObject, moment: Moment): InfoCard;
 }

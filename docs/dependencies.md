@@ -15,8 +15,9 @@ npm is recorded in ADR 0008. `npm run docs:check` fails if this table and packag
 | `expo-glass-effect`              | Native iOS glass in the Glass look | MIT     | 0014 |
 | `expo-haptics`                   | Lock-on tap                        | MIT     | 0002 |
 | `expo-linking`                   | Expo Router requirement            | MIT     | 0002 |
-| `expo-location`                  | Capture location                   | MIT     | 0007 |
+| `expo-location`                  | Location and true north            | MIT     | 0007 |
 | `expo-router`                    | Navigation                         | MIT     | 0002 |
+| `expo-sensors`                   | Device orientation                 | MIT     | 0016 |
 | `expo-sqlite`                    | Logbook storage                    | MIT     | 0007 |
 | `expo-status-bar`                | Status bar style                   | MIT     | 0002 |
 | `react`                          | UI                                 | MIT     | 0002 |

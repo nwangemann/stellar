@@ -21,3 +21,9 @@ export interface Observer {
   readonly lat: Degrees;
   readonly lon: Degrees;
 }
+
+/** A place and a time to see the sky from. */
+export interface Moment {
+  readonly observer: Observer;
+  readonly date: Date;
+}

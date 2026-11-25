@@ -1,10 +1,16 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import type { SkinId } from '../tokens/tokens';
 
 /** Decoration over the sky. It never takes touches and is hidden from screen readers. */
-export function SkyFrame({ skin, locked }: { skin: SkinId; locked: boolean }) {
+export const SkyFrame = memo(function SkyFrame({
+  skin,
+  locked,
+}: {
+  skin: SkinId;
+  locked: boolean;
+}) {
   return (
     <View
       style={[StyleSheet.absoluteFill, styles.inert]}
@@ -36,7 +42,7 @@ export function SkyFrame({ skin, locked }: { skin: SkinId; locked: boolean }) {
       ) : null}
     </View>
   );
-}
+});
 
 /** Leans in from the edge to see what you found. */
 function Alien({ visible }: { visible: boolean }) {

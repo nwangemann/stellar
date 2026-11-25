@@ -22,7 +22,8 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": ["android.permission.CAMERA"]
+      "permissions": ["android.permission.CAMERA"],
+      "blockedPermissions": ["android.permission.ACTIVITY_RECOGNITION"]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -35,7 +36,13 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Stellar uses your location to work out which stars are above you."
+          "locationWhenInUsePermission": "Stellar uses your location to work out which stars are above you and where true north is."
+        }
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Stellar uses motion sensors to show the part of the sky your phone points at."
         }
       ]
     ],

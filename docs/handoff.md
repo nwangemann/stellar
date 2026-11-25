@@ -6,35 +6,23 @@ Tasks are in the [backlog](backlog/README.md); setup is in the `stellar-dev` ski
 
 ## Before v0.1.0
 
-Tag v0.1.0 only after the device checks below pass.
-
-### Physical device checklist
-
-The bundle identifier is `com.nate.stellar`. The user does: sign in under Xcode Settings > Accounts, connect by cable and tap Trust, turn on Developer Mode, and give the model and iOS version.
-
-Then:
-
-1. Set the signing team in Xcode and build with `npx expo run:ios --device`. Do not commit the team unless the user agrees.
-2. Check the camera image, lock-on haptic, camera and location prompts (allow and deny), location in a capture, night vision, and drag smoothness.
-3. Repeat with `npx expo run:ios --device --configuration Release`, which runs away from the Mac.
-
-Direct install is preferred over TestFlight for now. A free Apple ID works, but the app expires after 7 days. TestFlight needs the paid Apple Developer Program.
+Device checks, tuning and calibration are deferred to the end of development, in [backlog task 8](backlog/device.md). Tag v0.1.0 only after they pass.
 
 On the simulator, location and permission prompts are also untested.
 
 ## Phase status
 
-| Phase                | Status                                                                                                               |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| 1. Scaffold          | Done                                                                                                                 |
-| 2. Design system     | Done; glass panels are translucent, with no blur                                                                     |
-| 3. App shell         | Done except photo capture                                                                                            |
-| 4. Verify on devices | iOS simulator done; physical iOS device not started                                                                  |
-| 5. Core engine       | Started: real stars, constellations, star and mythology content. Sensors, calibration and Layers content not started |
+| Phase                | Status                                                                                                                                                                       |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Scaffold          | Done                                                                                                                                                                         |
+| 2. Design system     | Done; glass panels are translucent, with no blur                                                                                                                             |
+| 3. App shell         | Done except photo capture                                                                                                                                                    |
+| 4. Verify on devices | iOS simulator done; physical iOS device deferred to the end (backlog task 8)                                                                                                 |
+| 5. Core engine       | Started: real stars, constellations, star and mythology content. Sensors connected but not tried on a phone; compass alignment built but untried; Layers content not started |
 
 ## What has been verified
 
-- `npm run check` passes, with 34 tests. GitHub Actions runs it on pull requests and `main`; it does not build the app.
+- `npm run check` passes, with 188 tests. GitHub Actions runs it on pull requests and `main`; it does not build the app.
 - Both Husky hooks ran: a bad commit message was rejected and valid commits passed the full checks.
 - Before the move, the iOS and Android JavaScript bundles built. The iOS debug build has since compiled; Android has not.
 - Before the move, these worked in the web preview: onboarding, drag-to-look, lock-on, info sheet, capture to logbook, switching to Constellations, night vision.
@@ -49,10 +37,11 @@ Not verified: camera image, haptics, permission prompts, location, release build
 
 ## Known limits
 
-- Stars, constellations and stories are bundled snapshots (ADR 13). Pose comes from dragging only. The Sun, Moon and planets have no details screen. Their marks are much larger than life.
+- Stars, constellations and stories are bundled snapshots (ADR 13). Sensor pose is unproven on a phone; dragging is the fallback. The marks for the Sun, Moon and planets are much larger than life.
 - Stories cover 10 figures and papers cover 27 stars. arXiv and NASA Exoplanet Archive reuse terms are unchecked. Stories need community review before release.
 - Capture saves a data card with no photo. On web the logbook clears on reload.
-- Field of view is fixed at 60°.
+- Sensor pose assumes portrait; iPads and large Android screens can rotate (ADR 16).
+- The field of view over the camera is estimated, not measured on a phone. Compass alignment lasts only until the app restarts.
 - npm audit reports 23 moderate advisories. Those examined involve `minimatch` in development tooling; the rest are unreviewed. Do not use `npm audit fix --force`: it proposed downgrading Expo.
 - Stellar is MIT licensed (ADR 10). The copyright line says "Stellar contributors".
 

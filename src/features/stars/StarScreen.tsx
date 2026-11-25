@@ -1,6 +1,9 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView } from 'react-native';
-import { papersFor, planetsFor, starById } from '@/core/catalog/catalog';
+import { constellationById, papersFor, planetsFor, starById } from '@/core/catalog/catalog';
+import { FindInSky } from '@/features/find/FindButton';
+import { detailsRoute } from '@/features/sky/details';
+import { Button } from '@/ui/components/Button';
 import { FactRow } from '@/ui/components/FactRow';
 import { GlassPanel } from '@/ui/components/GlassPanel';
 import { LinkRow } from '@/ui/components/LinkRow';
@@ -10,15 +13,27 @@ import { starFacts } from './facts';
 
 export function StarScreen() {
   const t = useTheme();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
+  const { id, at } = useLocalSearchParams<{ id: string; at?: string }>();
   const star = starById(id);
   if (!star) return <Text style={{ padding: t.space.lg }}>This star is not in the catalog.</Text>;
+  const constellation = constellationById(star.constellation ?? '');
   const papers = papersFor(id);
   const planets = planetsFor(id);
   const query = encodeURIComponent(star.name);
   return (
     <ScrollView contentContainerStyle={{ padding: t.space.lg, gap: t.space.md }}>
       <Stack.Screen options={{ title: star.name }} />
+      <FindInSky target={{ kind: 'star', id, name: star.name }} at={at} />
+      {constellation ? (
+        <Button
+          variant="quiet"
+          label={`Constellation: ${constellation.name}`}
+          onPress={() =>
+            router.push(detailsRoute({ kind: 'constellation', id: constellation.id }, at))
+          }
+        />
+      ) : null}
       <GlassPanel>
         <Text size="title">Star data</Text>
         {starFacts(id).map((f) => (

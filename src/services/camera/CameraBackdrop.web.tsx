@@ -8,4 +8,6 @@ export const useCameraPermission = () => ({
   requestPermission: async () => false,
 });
 
+export const useCameraFocalLength = (): number | undefined => undefined;
+
 export const useCameraAvailable = () => false;

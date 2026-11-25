@@ -80,7 +80,7 @@
 {"id":"Tau","name":"Taurus","english":"Bull","lines":[[25428,21881,20889],[21421,26451],[20205,20455],[20205,18724,15900],[21421,20889],[21421,20894,20205],[20889,20648,20455,17847]]},
 {"id":"Tel","name":"Telescopium","english":"Telescope","lines":[[90568,90422]]},
 {"id":"Tri","name":"Triangulum","english":"Triangle","lines":[[10670,10064,8796,10670]]},
-{"id":"Tra","name":"Triangulum Australe","english":"Southern Triangle","lines":[[82273,74946,77952,82273]]},
+{"id":"TrA","name":"Triangulum Australe","english":"Southern Triangle","lines":[[82273,74946,77952,82273]]},
 {"id":"Tuc","name":"Tucana","english":"Toucan","lines":[[110130,114996,1599],[114996,2484]]},
 {"id":"UMa","name":"Ursa Major","english":"Great Bear","lines":[[67301,65378,62956,59774,54061,53910,58001,59774],[58001,57399,54539,50372],[54539,50801],[53910,48402,46853,44471],[46853,44127],[48402,48319,41704,46733,54061]]},
 {"id":"UMi","name":"Ursa Minor","english":"Little Bear","lines":[[11767,85822,82080,77055,79822,75097,72607,77055]]},

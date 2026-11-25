@@ -1,13 +1,12 @@
-import { aboveHorizon } from '@/core/catalog/sky';
 import type { LayerPlugin } from '@/core/layers/types';
 import { skyCard, skyTarget } from '@/features/sky/skyCard';
 
 export const identifyPlugin: LayerPlugin = {
   id: 'identify',
   label: 'Stars',
-  draw: (sky) => sky,
+  draw: (marks) => marks,
   lines: () => [],
-  selectable: (sky) => sky.filter((o) => o.magnitude < 4.5 && aboveHorizon(o)),
+  selects: (o) => o.magnitude < 4.5,
   target: skyTarget,
   card: skyCard,
 };

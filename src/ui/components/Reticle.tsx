@@ -1,10 +1,11 @@
+import { memo } from 'react';
 import { View } from 'react-native';
 import { SkinReticle } from '../skins/SkinReticle';
 import { useTheme } from '../useTheme';
 
 export const RETICLE_SIZE = 72;
 
-export function Reticle({ locked }: { locked: boolean }) {
+export const Reticle = memo(function Reticle({ locked }: { locked: boolean }) {
   const t = useTheme();
   if (t.skin !== 'default')
     return <SkinReticle skin={t.skin} size={RETICLE_SIZE} locked={locked} />;
@@ -20,4 +21,4 @@ export function Reticle({ locked }: { locked: boolean }) {
       }}
     />
   );
-}
+});

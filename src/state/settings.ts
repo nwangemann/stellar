@@ -12,6 +12,8 @@ interface Settings {
   onboarded: boolean;
   /** Show the camera behind the overlay. Off means the simulated dark sky. */
   cameraBackdrop: boolean;
+  /** Move the sky with the phone when its sensors and location allow; otherwise drag. */
+  followPhone: boolean;
   set: (patch: Partial<Omit<Settings, 'set'>>) => void;
 }
 
@@ -23,6 +25,7 @@ export const useSettings = create<Settings>()(
       skin: 'default',
       onboarded: false,
       cameraBackdrop: false,
+      followPhone: true,
       set: (patch) => set(patch),
     }),
     { name: 'settings', storage: createJSONStorage(() => settingsStorage) },

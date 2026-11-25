@@ -1,5 +1,5 @@
 import { Canvas, Fill, Shader, Skia } from '@shopify/react-native-skia';
-import { useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 import {
   useDerivedValue,
@@ -22,7 +22,9 @@ export type BackdropProps = {
 // How much of the art stays over the camera. Glass shows only the camera through its panels.
 const OVER_CAMERA = { default: 0, starship: 0.4, glass: 0, needlepoint: 0.6 } as const;
 
-export default function BackdropCanvas({ active, pose, overCamera = false }: BackdropProps) {
+export default memo(BackdropCanvas);
+
+function BackdropCanvas({ active, pose, overCamera = false }: BackdropProps) {
   const t = useTheme();
   const { width, height } = useWindowDimensions();
   const reduced = useReducedMotion();

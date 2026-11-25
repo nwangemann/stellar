@@ -20,4 +20,4 @@ flowchart LR
 - `app`: thin Expo Router routes.
 
 Pose lives in a Reanimated shared value so it never triggers React renders.
-The sky comes from bundled data in `src/data` (ADR 13). Pose still comes from dragging.
+The sky comes from bundled data in `src/data` (ADR 13). Pose comes from `src/services/orientation` (ADR 16) through `useSensorPose`, or from dragging when sensors are off or unavailable.

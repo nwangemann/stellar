@@ -5,18 +5,27 @@ import { Text } from './Text';
 
 type Props = {
   label: string;
+  /** For screen readers, when the label alone is unclear. */
+  accessibilityLabel?: string;
   onPress: () => void;
   variant?: 'primary' | 'quiet';
   disabled?: boolean;
 };
 
-export function Button({ label, onPress, variant = 'primary', disabled = false }: Props) {
+export function Button({
+  label,
+  accessibilityLabel,
+  onPress,
+  variant = 'primary',
+  disabled = false,
+}: Props) {
   const t = useTheme();
   const primary = variant === 'primary';
   if (t.skin !== 'default')
     return (
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
         accessibilityState={{ disabled }}
         disabled={disabled}
         onPress={onPress}
@@ -41,6 +50,7 @@ export function Button({ label, onPress, variant = 'primary', disabled = false }
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
