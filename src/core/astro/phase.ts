@@ -1,4 +1,4 @@
-import { deg, toRad, type Degrees } from '../units';
+import { deg, type Degrees } from '../units';
 import type { AltAz } from './coordinates';
 import { altAzVector, dot } from './vector';
 
