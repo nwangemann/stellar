@@ -2,15 +2,15 @@
 
 Snapshot: 2026-11-24. Check the install state again before relying on it.
 
-## Pick up here
+Tasks are in the [backlog](backlog/README.md); setup is in the `stellar-dev` skill.
 
-Work is tracked in the [backlog](backlog/README.md). Start there. Setup and gotchas are in the `stellar-dev` skill.
+## Before v0.1.0
 
 Tag v0.1.0 only after the device checks below pass.
 
 ### Physical device checklist
 
-The user does: sign in under Xcode Settings > Accounts, connect by cable and tap Trust, turn on Developer Mode, and give the model and iOS version.
+The bundle identifier is `com.nate.stellar`. The user does: sign in under Xcode Settings > Accounts, connect by cable and tap Trust, turn on Developer Mode, and give the model and iOS version.
 
 Then:
 
@@ -21,10 +21,6 @@ Then:
 Direct install is preferred over TestFlight for now. A free Apple ID works, but the app expires after 7 days. TestFlight needs the paid Apple Developer Program.
 
 On the simulator, location and permission prompts are also untested.
-
-## What Stellar is
-
-A phone app that overlays the sky on the camera, with three modes (Stars, Constellations, Layers), reticle lock-on and a logbook of identified objects. The user accepted every default in the original plan. Decisions are in [adr/](adr/); the design is in [architecture.md](architecture.md).
 
 ## Phase status
 
@@ -38,7 +34,7 @@ A phone app that overlays the sky on the camera, with three modes (Stars, Conste
 
 ## What has been verified
 
-- `npm run check` passes in this folder: types, lint, formatting, 34 tests, `docs:check`.
+- `npm run check` passes, with 34 tests. GitHub Actions runs it on pull requests and `main`; it does not build the app.
 - Both Husky hooks ran: a bad commit message was rejected and valid commits passed the full checks.
 - Before the move, the iOS and Android JavaScript bundles built. The iOS debug build has since compiled; Android has not.
 - Before the move, these worked in the web preview: onboarding, drag-to-look, lock-on, info sheet, capture to logbook, switching to Constellations, night vision.
@@ -58,11 +54,5 @@ Not verified: camera image, haptics, permission prompts, location, release build
 - Field of view is fixed at 60°.
 - npm audit reports 23 moderate advisories. Those examined involve `minimatch` in development tooling; the rest are unreviewed. Do not use `npm audit fix --force`: it proposed downgrading Expo.
 - Stellar is MIT licensed (ADR 10). The copyright line says "Stellar contributors".
-
-## Waiting on the user
-
-- Say which iOS device models and iOS versions to test on. A physical iOS device is confirmed for phase 4 (ADR 11).
-- Do the user steps in the device checklist. The bundle identifier is `com.nate.stellar`.
-- The remote is a private GitHub repo, `nwangemann/stellar`. GitHub Actions runs `npm run check` on pull requests and `main`. It does not build the app.
 
 Update this file only when project state changes. Progress on tasks goes in the backlog.

@@ -1,30 +1,17 @@
-This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+Stellar is an Expo/React Native app. Mobile first; iOS is tested first (ADR 11).
 
-## Expo has changed — do not trust your training data
+## Expo APIs
 
-Expo ships breaking changes every SDK release. APIs you remember are likely renamed, moved, or removed. Before writing any code that touches an Expo, EAS, or React Native API:
+Expo changes every SDK release, so do not code from memory. Before using an Expo, EAS or React Native API:
 
-1. Read the major version of the `expo` package in `package.json`.
-2. Fetch the matching versioned docs: `https://docs.expo.dev/versions/v<major>.0.0/`
-3. For anything else, fetch https://docs.expo.dev/llms.txt — an index of all Expo docs with corrections to common LLM misconceptions. Follow its links to the specific page you need; never answer from memory.
-
-## Commands
-
-Use npm and npx; there is no bun lockfile. Add packages with `npx expo install <package>`, never plain `npm install <package>`. Setup, run commands and gotchas are in the `stellar-dev` skill (`.claude/skills/stellar-dev/SKILL.md`).
-
-## Navigation & Routing
-
-- Use **Expo Router** for all navigation. Routes live in `app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) in `src/`.
-- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
-- Docs: https://docs.expo.dev/router/introduction.md
-
-## Building with EAS
-
-Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.
-Docs: https://docs.expo.dev/eas/index.md
+1. Read the installed package's types in `node_modules`.
+2. If they do not settle it, fetch only that API's page under `https://docs.expo.dev/versions/v<major>.0.0/`, with the major version of `expo` in `package.json`.
+3. Use `https://docs.expo.dev/llms.txt` only to find a page you cannot locate. It is large, so search it for the topic.
 
 ## Rules
 
-- If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
-- Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
-- Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
+- Use npm and npx. Add packages with `npx expo install <package>`, never plain `npm install <package>`.
+- Navigation is Expo Router. Every file in `app/` is a screen or a `_layout.tsx`; other code goes in `src/`.
+- `ios/` and `android/` are generated. Never edit them; use `app.json` and config plugins.
+- Adding native code means rebuilding the app with `npx expo run:ios`. Expo Go is not used.
+- Prefer Expo modules over third-party libraries.

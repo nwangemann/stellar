@@ -117,7 +117,14 @@ for (const p of json('api/planets.json')) {
     periodDays: p.pl_orbper,
   });
 }
-const save = (name, data) => writeFileSync(`src/data/${name}.json`, JSON.stringify(data) + '\n');
+// One record per line, so a text search prints the matching record and not the whole file.
+const format = (data) =>
+  Array.isArray(data)
+    ? `[\n${data.map((v) => JSON.stringify(v)).join(',\n')}\n]\n`
+    : `{\n${Object.entries(data)
+        .map(([k, v]) => `${JSON.stringify(k)}:${JSON.stringify(v)}`)
+        .join(',\n')}\n}\n`;
+const save = (name, data) => writeFileSync(`src/data/${name}.json`, format(data));
 save('stars', stars);
 save('constellations', constellations);
 save('figures', figures);

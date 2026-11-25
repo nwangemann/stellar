@@ -10,7 +10,7 @@ Everything is bundled in `src/data`. The app makes no network requests for sky d
 | Paper titles                                    | `papers.json`                         | arXiv API, title search in astro-ph.SR for 50 named stars              | Terms still to be checked               |
 | Planets                                         | `planets.json`                        | NASA Exoplanet Archive, `pscomppars`, V < 6.5                          | Terms still to be checked               |
 
-Rebuild with `node scripts/build-catalog.mjs <dir>`, where `<dir>` holds `hyg/hyg_v44.csv.gz`, `sc/<culture>/index.json`, `api/papers.json` and `api/planets.json`. The script fails if a line star is missing.
+Rebuild with `node scripts/build-catalog.mjs <dir>`, where `<dir>` holds `hyg/hyg_v44.csv.gz`, `sc/<culture>/index.json`, `api/papers.json` and `api/planets.json`. It writes one record per line to keep searches small. The script fails if a line star is missing.
 
 ## Limits
 

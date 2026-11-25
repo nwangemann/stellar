@@ -1,5 +1,7 @@
 # Architecture
 
+Stellar overlays the sky on the camera. It has three modes (Stars, Constellations, Layers), reticle lock-on and a logbook of identified objects.
+
 ```mermaid
 flowchart LR
   L[Location and time] --> S[Sky model]

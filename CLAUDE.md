@@ -5,6 +5,7 @@
 - Any change to `src/core`, features, dependencies or standards must update the matching doc in the same change.
 - Significant decisions get an ADR in `docs/adr`.
 - `src/core` stays free of React and Expo imports.
+- Never read `src/data/*.json` whole; look up records with `grep` and cap output with `head -c`.
 - Run `npm run check` before declaring work done.
 
 ## Session routine

@@ -22,7 +22,6 @@ Sizes are rough estimates in steps. A step should fit in one session.
 
 ## Needs the user
 
-- Git: merge the pull request for `feat/real-sky-and-looks`.
 - Device: say which iPhone and iOS version, and do the steps in the [handoff](../handoff.md).
 
 ## Later, not yet prioritized
