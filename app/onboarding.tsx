@@ -27,8 +27,8 @@ export default function Onboarding() {
     <View style={{ flex: 1, justifyContent: 'center', padding: t.space.xl, gap: t.space.lg }}>
       <Text size="display">Stellar</Text>
       <Text muted>
-        The camera shows the sky behind the overlay. Your location is saved with each capture. Both
-        stay on this phone, and you can skip them.
+        The camera shows the sky behind the overlay. Your location is saved each time you identify
+        something. Both stay on this phone, and you can skip them.
       </Text>
       <Button label="Allow camera and location" onPress={() => void allow()} />
       <Button variant="quiet" label="Use simulated sky" onPress={() => finish(false)} />

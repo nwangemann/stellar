@@ -2,10 +2,16 @@
 
 @AGENTS.md
 
-This project keeps routes in `app/`, not `src/app/`.
-
 - Any change to `src/core`, features, dependencies or standards must update the matching doc in the same change.
 - Significant decisions get an ADR in `docs/adr`.
 - `src/core` stays free of React and Expo imports.
 - Run `npm run check` before declaring work done.
-- Starting or resuming work? Read `docs/handoff.md` first, and update it before you finish.
+
+## Session routine
+
+1. Read `docs/backlog/README.md`, then only the file for the task at hand. Read `docs/handoff.md` only when you need project state.
+2. Load the `stellar-dev` skill before running anything.
+3. Do one step (one checkbox). Open only the files that step lists.
+4. Run `npm run check`, tick the step, update "Next step" in the backlog index, and stop. Start the next step in a new session.
+
+New ideas go in the backlog, not in the current step.

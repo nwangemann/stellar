@@ -7,3 +7,5 @@ export const useCameraPermission = () => ({
   canRequestPermission: false,
   requestPermission: async () => false,
 });
+
+export const useCameraAvailable = () => false;

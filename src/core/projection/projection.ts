@@ -1,5 +1,5 @@
 import type { AltAz } from '../astro/coordinates';
-import type { SkyObject } from '../catalog/mockSky';
+import type { SkyObject } from '../catalog/types';
 import type { Pose } from '../pose/pose';
 import { px, toRad, type Degrees, type Pixels } from '../units';
 

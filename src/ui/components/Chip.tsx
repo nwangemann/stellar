@@ -1,4 +1,5 @@
 import { Pressable } from 'react-native';
+import { SkinSurface } from '../skins/SkinSurface';
 import { useTheme } from '../useTheme';
 import { Text } from './Text';
 
@@ -6,6 +7,20 @@ type Props = { label: string; selected: boolean; onPress: () => void; role?: 'ta
 
 export function Chip({ label, selected, onPress, role = 'switch' }: Props) {
   const t = useTheme();
+  if (t.skin !== 'default')
+    return (
+      <Pressable
+        accessibilityRole={role}
+        accessibilityState={role === 'tab' ? { selected } : { checked: selected }}
+        onPress={onPress}
+      >
+        {({ pressed }) => (
+          <SkinSurface kind={selected ? 'chipOn' : 'chip'} pressed={pressed}>
+            <Text style={{ color: selected ? t.color.onAccent : t.color.text }}>{label}</Text>
+          </SkinSurface>
+        )}
+      </Pressable>
+    );
   return (
     <Pressable
       accessibilityRole={role}

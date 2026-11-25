@@ -10,3 +10,10 @@ export function CameraBackdrop({ isActive }: { isActive: boolean }) {
 }
 
 export { useCameraPermission };
+
+/** Whether the backdrop has a picture to show: a camera exists and is allowed. */
+export function useCameraAvailable() {
+  const device = useCameraDevice('back');
+  const { hasPermission } = useCameraPermission();
+  return !!device && hasPermission;
+}

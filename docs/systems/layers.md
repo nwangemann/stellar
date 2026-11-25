@@ -1,3 +1,3 @@
 # Layers mode
 
-Layer plugin. Will become a tray of toggleable layers. Placeholder content.
+Layer plugin. Uses real stars. Will become a tray of toggleable layers. Placeholder content.

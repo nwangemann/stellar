@@ -1,6 +1,13 @@
-import type { SkyObject } from '../catalog/mockSky';
+import type { SkyObject } from '../catalog/types';
 
 export type ModeId = 'identify' | 'constellations' | 'layers';
+
+/** What a lock refers to: usually the star itself, or the figure it belongs to. */
+export interface Target {
+  readonly kind: 'star' | 'constellation';
+  readonly id: string;
+  readonly name: string;
+}
 
 export interface InfoCard {
   readonly title: string;
@@ -17,5 +24,6 @@ export interface LayerPlugin {
   lines(sky: readonly SkyObject[]): readonly (readonly [SkyObject, SkyObject])[];
   /** Objects the reticle may lock on to. */
   selectable(sky: readonly SkyObject[]): readonly SkyObject[];
+  target(object: SkyObject): Target;
   card(object: SkyObject): InfoCard;
 }

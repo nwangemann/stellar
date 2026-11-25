@@ -6,7 +6,7 @@ import {
   type SharedValue,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
-import type { SkyObject } from '@/core/catalog/mockSky';
+import type { SkyObject } from '@/core/catalog/types';
 import { stepLock, UNLOCKED, type LockState } from '@/core/focus/lock';
 import type { Pose } from '@/core/pose/pose';
 import { hitTest, type Viewport } from '@/core/projection/projection';

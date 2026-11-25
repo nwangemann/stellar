@@ -1,22 +1,24 @@
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../useTheme';
 import { Button } from './Button';
 import { Text } from './Text';
 
-type Props = { title: string; onBack: () => void };
+type Props = { title: string; onBack: () => void; modal?: boolean };
 
 /** Replaces the system header, whose back button ignores the theme on iOS 26. */
-export function ScreenHeader({ title, onBack }: Props) {
+export function ScreenHeader({ title, onBack, modal = false }: Props) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
+  // iOS shows modals as cards that already start below the status bar.
+  const top = modal && Platform.OS === 'ios' ? t.space.sm : insets.top;
   return (
     <View
       style={{
         flexDirection: 'row',
         alignItems: 'center',
         gap: t.space.md,
-        paddingTop: insets.top + t.space.sm,
+        paddingTop: top + t.space.sm,
         paddingBottom: t.space.sm,
         paddingHorizontal: t.space.lg,
         backgroundColor: t.color.sky,
