@@ -4,12 +4,9 @@ Snapshot: 2026-11-24. Check the install state again before relying on it.
 
 ## Pick up here
 
-Open a Claude Code session in `~/Code/stellar` and say: "Read docs/handoff.md and continue."
+Work is tracked in the [backlog](backlog/README.md). Start there. Setup and gotchas are in the `stellar-dev` skill.
 
-1. Set the path (see Environment). Check `git status` and run `npm run check`.
-2. Simulator: `npm run ios`. If the dev server is not already running, this starts it.
-3. Next task: the physical iOS device (see below). Android waits for an emulator (ADR 11) and needs Android Studio.
-4. Tag v0.1.0 only after the device checks pass. Photo capture is the one unbuilt part of phase 3.
+Tag v0.1.0 only after the device checks below pass.
 
 ### Physical device checklist
 
@@ -27,71 +24,40 @@ On the simulator, location and permission prompts are also untested.
 
 ## What Stellar is
 
-A phone app that overlays the sky on the camera, with three modes (Identify, Constellations, Layers), reticle lock-on and a capture logbook. The user accepted every default in the original plan. Decisions are in [adr/](adr/); the design is in [architecture.md](architecture.md).
-
-## Environment
-
-| Tool                           | State on 2026-11-24                                 |
-| ------------------------------ | --------------------------------------------------- |
-| Node 24.22.3, npm 11.19.1      | Installed in `~/.local/node`, not on the shell path |
-| Git 2.50.1                     | Installed with Xcode                                |
-| Xcode 26.6, iOS 26.5 simulator | Installed                                           |
-| CocoaPods 1.17.0, Homebrew     | Installed in /opt/homebrew                          |
-| Android Studio, SDK, Java      | Not installed                                       |
-
-Run this first in every new terminal (shell settings were not changed):
-
-```bash
-export PATH="$HOME/.local/node/bin:/opt/homebrew/bin:$PATH"
-export LANG=en_US.UTF-8
-```
-
-The project moved here from a temporary Claude session folder. Work only in `~/Code/stellar`.
+A phone app that overlays the sky on the camera, with three modes (Stars, Constellations, Layers), reticle lock-on and a logbook of identified objects. The user accepted every default in the original plan. Decisions are in [adr/](adr/); the design is in [architecture.md](architecture.md).
 
 ## Phase status
 
-| Phase                | Status                                                                    |
-| -------------------- | ------------------------------------------------------------------------- |
-| 1. Scaffold          | Done                                                                      |
-| 2. Design system     | Done; glass panels are translucent, with no blur                          |
-| 3. App shell         | Done except photo capture                                                 |
-| 4. Verify on devices | iOS simulator done; physical iOS device not started                       |
-| 5. Core engine       | Not started: real astronomy, sensors, calibration, catalogs, mode content |
+| Phase                | Status                                                                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| 1. Scaffold          | Done                                                                                                                 |
+| 2. Design system     | Done; glass panels are translucent, with no blur                                                                     |
+| 3. App shell         | Done except photo capture                                                                                            |
+| 4. Verify on devices | iOS simulator done; physical iOS device not started                                                                  |
+| 5. Core engine       | Started: real stars, constellations, star and mythology content. Sensors, calibration and Layers content not started |
 
 ## What has been verified
 
-- `npm run check` passes in this folder: types, lint, formatting, 17 tests, `docs:check`.
+- `npm run check` passes in this folder: types, lint, formatting, 34 tests, `docs:check`.
 - Both Husky hooks ran: a bad commit message was rejected and valid commits passed the full checks.
 - Before the move, the iOS and Android JavaScript bundles built. The iOS debug build has since compiled; Android has not.
 - Before the move, these worked in the web preview: onboarding, drag-to-look, lock-on, info sheet, capture to logbook, switching to Constellations, night vision.
 - On the iPhone 17 Pro simulator (iOS 26.5): simulated sky, drag, lock-on, capture to SQLite, logbook, mode swipe, saved settings, night vision.
+- With bundled data, on the simulator: real stars and lines, lock-on to a constellation, the constellation modal, the star modal.
 - Expo Doctor passes 20/20 with Homebrew on the path. Without it, the native tooling check fails.
 
 Not verified: camera image, haptics, permission prompts, location, release builds, anything on a physical phone or Android.
 
+- Looks (ADR 14), on the simulator: the picker, the sky screen in Starship, Glass & chrome and Needlepoint, and night vision over them. Not verified: looks on a phone or Android, over the live camera, with Reduce Motion or Reduce Transparency, frame rate and battery. The Starship alien visitor has not been seen on screen (backlog item 6).
+
 ## Known limits
 
-- Stars and constellation lines are made-up placeholders. Pose comes from dragging only.
+- Stars, constellations and stories are bundled snapshots (ADR 13). Pose comes from dragging only. No Sun, Moon or planets.
+- Stories cover 10 figures and papers cover 27 stars. arXiv and NASA Exoplanet Archive reuse terms are unchecked. Stories need community review before release.
 - Capture saves a data card with no photo. On web the logbook clears on reload.
 - Field of view is fixed at 60°.
 - npm audit reports 23 moderate advisories. Those examined involve `minimatch` in development tooling; the rest are unreviewed. Do not use `npm audit fix --force`: it proposed downgrading Expo.
 - Stellar is MIT licensed (ADR 10). The copyright line says "Stellar contributors".
-
-## Gotchas
-
-- Read the installed package types before coding. VisionCamera 5, MMKV 4 and Expo 58 differ from older examples.
-- Inside `useDerivedValue`, read shared values directly. One read only in a nested helper is not tracked; this froze the stars once.
-- Expo rewrites `tsconfig.json` on start, so Prettier ignores it.
-- `npx expo prebuild` regenerates `ios/` from scratch. Run `pod install` again and recreate `ios/.xcode.env.local` with `export NODE_BINARY=$HOME/.local/node/bin/node`.
-- Night vision hides the iOS status bar through `UIViewControllerBasedStatusBarAppearance: false` plus expo-status-bar (ADR 12). Do not set `statusBarHidden` on the navigator.
-- Two people driving the simulator at once looks like a bug: stray drags and mode changes. Relaunch before debugging.
-- Commits use a repo-local author with the user's account email. Ask before the first push whether to use a GitHub no-reply address.
-- There is no remote, so this Mac holds the only copy.
-- ESLint is pinned to version 9.
-- Only `src/services/camera` may import VisionCamera.
-- `sensors`, `astronomy-engine` and `file-system` packages were removed on purpose until phase 5.
-- Keep the project in a path without spaces.
-- The Claude preview config (`.claude/launch.json`) was not moved. Recreate it before using the web preview pane, or run `npm run web`. The template's `.claude/settings.json` (Expo plugin toggle) was also left behind.
 
 ## Waiting on the user
 
@@ -99,4 +65,4 @@ Not verified: camera image, haptics, permission prompts, location, release build
 - Do the user steps in the device checklist. The bundle identifier is `com.nate.stellar`.
 - Decide on a Git remote, which is also the backup. GitHub CI is part of the original plan and is not set up.
 
-Update this file at the end of each work session.
+Update this file only when project state changes. Progress on tasks goes in the backlog.
