@@ -22,7 +22,7 @@ Sizes are rough estimates in steps. A step should fit in one session.
 
 ## Needs the user
 
-- Git: merge the `feat/real-sky-and-looks` branch, choose a remote and an author address, then add CI. With no remote, this Mac holds the only copy.
+- Git: open a pull request for `feat/real-sky-and-looks`, merge it, then add CI.
 - Device: say which iPhone and iOS version, and do the steps in the [handoff](../handoff.md).
 
 ## Later, not yet prioritized

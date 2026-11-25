@@ -46,8 +46,8 @@ If another session is using a simulator, use a different one. To test without re
 - `npx expo prebuild` regenerates `ios/` from scratch. Run `pod install` again and recreate `ios/.xcode.env.local` with `export NODE_BINARY=$HOME/.local/node/bin/node`.
 - Night vision hides the iOS status bar through `UIViewControllerBasedStatusBarAppearance: false` plus expo-status-bar (ADR 12). Do not set `statusBarHidden` on the navigator.
 - Two people driving the simulator at once looks like a bug: stray drags and mode changes. Relaunch before debugging.
-- Commits use a repo-local author with the user's account email. Ask before the first push whether to use a GitHub no-reply address.
-- There is no remote, so this Mac holds the only copy.
+- Commits use a repo-local GitHub no-reply author. Keep it, so no personal email reaches GitHub.
+- `origin` is a private GitHub repo. `gh` is in /opt/homebrew/bin. Unpushed work exists only on this Mac.
 - ESLint is pinned to version 9.
 - Only `src/services/camera` may import VisionCamera.
 - `sensors`, `astronomy-engine` and `file-system` packages were removed on purpose until phase 5.
