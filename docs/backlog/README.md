@@ -2,21 +2,16 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step: 7.1 in [transition](transition.md).**
+**Next step: none ready. Task 3 needs the user's OK, and task 8 comes last.**
 
 ## Queue
 
 Sizes are rough estimates in steps. A step should fit in one session.
 
-| #   | Task                                        | Steps | Status     | Needs first                        |
-| --- | ------------------------------------------- | ----- | ---------- | ---------------------------------- |
-| 3   | [Simulator tests](simulator-tests.md)       | 3     | Needs user | OK to install Java and Maestro     |
-| 7   | [Zoom transition to details](transition.md) | 3     | Ready      | -                                  |
-| 8   | [On a real device](device.md)               | 8     | Last       | Feature work done, user's go-ahead |
-
-## Small fixes
-
-- 6. Alien visitor: see it on the simulator. It waits during lock-on, so check that it appears often enough. On 2026-11-24 it showed on two launches while a target was locked, which it should not.
+| #   | Task                                  | Steps | Status     | Needs first                        |
+| --- | ------------------------------------- | ----- | ---------- | ---------------------------------- |
+| 3   | [Simulator tests](simulator-tests.md) | 3     | Needs user | OK to install Java and Maestro     |
+| 8   | [On a real device](device.md)         | 8     | Last       | Feature work done, user's go-ahead |
 
 ## Later, not yet prioritized
 

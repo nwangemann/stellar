@@ -4,7 +4,8 @@ import { StyleSheet } from 'react-native';
 import { useDerivedValue, type SharedValue } from 'react-native-reanimated';
 import type { SkyMark, SkyTurn, StarMark } from '@/core/catalog/types';
 import type { Pose } from '@/core/pose/pose';
-import { lensFor, projectThrough, starLens, type Viewport } from '@/core/projection/projection';
+import { projectThrough, starLens, type Lens, type Viewport } from '@/core/projection/projection';
+import { zoomedLens, type ZoomAim } from '@/core/projection/zoom';
 import type { SkinId } from '@/ui/tokens/tokens';
 import { useTheme } from '@/ui/useTheme';
 import { BodyMarks } from './BodyMarks';
@@ -15,18 +16,19 @@ export type SkyCanvasProps = {
   turn: SharedValue<SkyTurn>;
   pose: SharedValue<Pose>;
   view: Viewport;
+  zoom: { aim: SharedValue<ZoomAim | null>; amount: SharedValue<number> };
 };
 
 /** Shared values are read by the caller: Reanimated only tracks reads directly in the derived value. */
 function starPath(
   group: readonly StarMark[],
   turn: SkyTurn,
-  pose: Pose,
+  horizonLens: Lens,
   view: Viewport,
   skin: SkinId,
 ) {
   'worklet';
-  const lens = starLens(lensFor(pose, view), turn);
+  const lens = starLens(horizonLens, turn);
   const builder = Skia.PathBuilder.Make();
   for (const o of group) {
     const p = projectThrough(lens, o.direction);
@@ -57,7 +59,7 @@ function starPath(
 /** A refresh only changes `turn`, so it must not render this again: rebuilding the worklets is slow. */
 export default memo(SkyCanvas);
 
-function SkyCanvas({ marks, lines, turn, pose, view }: SkyCanvasProps) {
+function SkyCanvas({ marks, lines, turn, pose, view, zoom }: SkyCanvasProps) {
   const t = useTheme();
   const skin = t.skin;
   const points = useMemo(() => marks.filter((m) => m.kind === 'star'), [marks]);
@@ -72,14 +74,18 @@ function SkyCanvas({ marks, lines, turn, pose, view }: SkyCanvasProps) {
   const bright = useMemo(() => points.filter((o) => o.magnitude < 2.5), [points]);
   const faint = useMemo(() => points.filter((o) => o.magnitude >= 2.5), [points]);
 
-  const brightPath = useDerivedValue(() => starPath(bright, turn.value, pose.value, view, skin));
-  const faintPath = useDerivedValue(() => starPath(faint, turn.value, pose.value, view, skin));
+  const { aim, amount } = zoom;
+  const lens = useDerivedValue(() =>
+    zoomedLens(pose.value, view, turn.value, aim.value, amount.value),
+  );
+  const brightPath = useDerivedValue(() => starPath(bright, turn.value, lens.value, view, skin));
+  const faintPath = useDerivedValue(() => starPath(faint, turn.value, lens.value, view, skin));
   const linePath = useDerivedValue(() => {
     const builder = Skia.PathBuilder.Make();
-    const lens = starLens(lensFor(pose.value, view), turn.value);
+    const stars = starLens(lens.value, turn.value);
     for (const ends of segments) {
-      const p = projectThrough(lens, ends[0]);
-      const q = projectThrough(lens, ends[1]);
+      const p = projectThrough(stars, ends[0]);
+      const q = projectThrough(stars, ends[1]);
       if (p && q) {
         builder.moveTo(p.x, p.y);
         builder.lineTo(q.x, q.y);
@@ -102,7 +108,7 @@ function SkyCanvas({ marks, lines, turn, pose, view }: SkyCanvasProps) {
           strokeWidth={2.8}
           strokeCap="round"
         />
-        <BodyMarks bodies={bodies} turn={turn} pose={pose} view={view} />
+        <BodyMarks bodies={bodies} turn={turn} lens={lens} zoom={zoom} />
       </Canvas>
     );
   if (skin === 'starship' || skin === 'glass')
@@ -117,7 +123,7 @@ function SkyCanvas({ marks, lines, turn, pose, view }: SkyCanvasProps) {
           <BlurMask blur={skin === 'starship' ? 8 : 4} style="normal" />
         </Path>
         <Path path={brightPath} color={t.color.star} />
-        <BodyMarks bodies={bodies} turn={turn} pose={pose} view={view} />
+        <BodyMarks bodies={bodies} turn={turn} lens={lens} zoom={zoom} />
       </Canvas>
     );
   return (
@@ -125,7 +131,7 @@ function SkyCanvas({ marks, lines, turn, pose, view }: SkyCanvasProps) {
       <Path path={linePath} color={t.color.line} style="stroke" strokeWidth={1.5} />
       <Path path={faintPath} color={t.color.star} opacity={0.6} />
       <Path path={brightPath} color={t.color.star} />
-      <BodyMarks bodies={bodies} turn={turn} pose={pose} view={view} />
+      <BodyMarks bodies={bodies} turn={turn} lens={lens} zoom={zoom} />
     </Canvas>
   );
 }

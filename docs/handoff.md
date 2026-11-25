@@ -32,7 +32,7 @@ On the simulator, location and permission prompts are also untested.
 
 Not verified: camera image, haptics, permission prompts, location, release builds, anything on a physical phone or Android.
 
-- Looks (ADR 14), on the simulator: the picker, the sky screen in Starship, Glass & chrome and Needlepoint, and night vision over them. Not verified: looks on a phone or Android, over the live camera, with Reduce Motion or Reduce Transparency, frame rate and battery. The Starship alien visitor has been seen, but with a lock showing (backlog item 6).
+- Looks (ADR 14), on the simulator: the picker, the sky screen in Starship, Glass & chrome and Needlepoint, and night vision over them. Not verified: looks on a phone or Android, over the live camera, with Reduce Motion or Reduce Transparency, frame rate and battery.
 - Sky marks, on the simulator with a faked date: the Sun, a half Moon, planets and the Sun warning in every look and night vision.
 
 ## Known limits

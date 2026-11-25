@@ -4,20 +4,27 @@ import { useDerivedValue, type SharedValue } from 'react-native-reanimated';
 import type { BodyId } from '@/core/astro/bodies';
 import { litOutline } from '@/core/astro/phase';
 import type { SkyTurn } from '@/core/catalog/types';
-import type { Pose } from '@/core/pose/pose';
-import { lensFor, projectThrough, type Viewport } from '@/core/projection/projection';
+import { projectThrough, type Lens } from '@/core/projection/projection';
+import type { ZoomAim } from '@/core/projection/zoom';
 import { useTheme } from '@/ui/useTheme';
 
 type Props = {
   bodies: readonly BodyId[];
   turn: SharedValue<SkyTurn>;
-  pose: SharedValue<Pose>;
-  view: Viewport;
+  lens: SharedValue<Lens>;
+  zoom: { aim: SharedValue<ZoomAim | null>; amount: SharedValue<number> };
 };
 
 const SUN_R = 13;
 const MOON_R = 13;
 const PLANET_R = 4.5;
+/** How many times larger a body is drawn when zoomed in on. */
+const GROWTH = 3;
+
+function growth(id: BodyId, aim: ZoomAim | null, amount: number) {
+  'worklet';
+  return aim?.body === id ? 1 + (GROWTH - 1) * amount : 1;
+}
 
 function ray(b: SkPathBuilder, x: number, y: number, angle: number, from: number, to: number) {
   'worklet';
@@ -28,7 +35,8 @@ function ray(b: SkPathBuilder, x: number, y: number, angle: number, from: number
 }
 
 /** Marks for the Sun, Moon and planets. They differ in shape, so night vision can tell them apart. */
-export function BodyMarks({ bodies, turn, pose, view }: Props) {
+export function BodyMarks({ bodies, turn, lens, zoom }: Props) {
+  const { aim, amount } = zoom;
   const t = useTheme();
   const skin = t.skin;
   const sun = bodies.includes('sun');
@@ -37,37 +45,39 @@ export function BodyMarks({ bodies, turn, pose, view }: Props) {
 
   const sunDisc = useDerivedValue(() => {
     const b = Skia.PathBuilder.Make();
-    const p = sun ? projectThrough(lensFor(pose.value, view), turn.value.bodies.sun) : null;
-    if (p) b.addCircle(p.x, p.y, SUN_R);
+    const p = sun ? projectThrough(lens.value, turn.value.bodies.sun) : null;
+    if (p) b.addCircle(p.x, p.y, SUN_R * growth('sun', aim.value, amount.value));
     return b.build();
   });
   const sunRays = useDerivedValue(() => {
     const b = Skia.PathBuilder.Make();
-    const p = sun ? projectThrough(lensFor(pose.value, view), turn.value.bodies.sun) : null;
+    const p = sun ? projectThrough(lens.value, turn.value.bodies.sun) : null;
     if (p) {
+      const k = growth('sun', aim.value, amount.value);
       const count = skin === 'glass' ? 4 : skin === 'needlepoint' ? 16 : 8;
       for (let i = 0; i < count; i++) {
         const length = skin === 'glass' ? 18 : i % 2 ? 6 : 10;
-        ray(b, p.x, p.y, (i * 2 * Math.PI) / count, SUN_R + 4, SUN_R + 4 + length);
+        ray(b, p.x, p.y, (i * 2 * Math.PI) / count, (SUN_R + 4) * k, (SUN_R + 4 + length) * k);
       }
     }
     return b.build();
   });
   const moonDisc = useDerivedValue(() => {
     const b = Skia.PathBuilder.Make();
-    const p = moon ? projectThrough(lensFor(pose.value, view), turn.value.bodies.moon) : null;
-    if (p) b.addCircle(p.x, p.y, MOON_R);
+    const p = moon ? projectThrough(lens.value, turn.value.bodies.moon) : null;
+    if (p) b.addCircle(p.x, p.y, MOON_R * growth('moon', aim.value, amount.value));
     return b.build();
   });
   const moonLit = useDerivedValue(() => {
     const b = Skia.PathBuilder.Make();
-    const p = moon ? projectThrough(lensFor(pose.value, view), turn.value.bodies.moon) : null;
+    const p = moon ? projectThrough(lens.value, turn.value.bodies.moon) : null;
     const phase = turn.value.moon;
-    const q = projectThrough(lensFor(pose.value, view), phase.towardSun);
+    const q = projectThrough(lens.value, phase.towardSun);
     if (p && q) {
       const angle = Math.atan2(q.y - p.y, q.x - p.x);
-      const c = Math.cos(angle) * MOON_R;
-      const s = Math.sin(angle) * MOON_R;
+      const r = MOON_R * growth('moon', aim.value, amount.value);
+      const c = Math.cos(angle) * r;
+      const s = Math.sin(angle) * r;
       let first = true;
       for (const o of litOutline(phase.lit)) {
         const x = p.x + o.x * c - o.y * s;
@@ -82,31 +92,32 @@ export function BodyMarks({ bodies, turn, pose, view }: Props) {
   });
   const planetDiscs = useDerivedValue(() => {
     const b = Skia.PathBuilder.Make();
-    const lens = lensFor(pose.value, view);
+    const now = lens.value;
     for (const id of planets) {
-      const p = projectThrough(lens, turn.value.bodies[id]);
-      if (p) b.addCircle(p.x, p.y, PLANET_R);
+      const p = projectThrough(now, turn.value.bodies[id]);
+      if (p) b.addCircle(p.x, p.y, PLANET_R * growth(id, aim.value, amount.value));
     }
     return b.build();
   });
   const planetRings = useDerivedValue(() => {
     const b = Skia.PathBuilder.Make();
-    const lens = lensFor(pose.value, view);
+    const now = lens.value;
     for (const id of planets) {
-      const p = projectThrough(lens, turn.value.bodies[id]);
+      const p = projectThrough(now, turn.value.bodies[id]);
       if (!p) continue;
+      const k = growth(id, aim.value, amount.value);
       if (id === 'saturn') {
         const tilt = -0.4;
         for (let i = 0; i <= 24; i++) {
           const a = (i / 24) * 2 * Math.PI;
-          const ex = Math.cos(a) * 11;
-          const ey = Math.sin(a) * 3.5;
+          const ex = Math.cos(a) * 11 * k;
+          const ey = Math.sin(a) * 3.5 * k;
           const x = p.x + ex * Math.cos(tilt) - ey * Math.sin(tilt);
           const y = p.y + ex * Math.sin(tilt) + ey * Math.cos(tilt);
           if (i === 0) b.moveTo(x, y);
           else b.lineTo(x, y);
         }
-      } else b.addCircle(p.x, p.y, PLANET_R + 3.5);
+      } else b.addCircle(p.x, p.y, (PLANET_R + 3.5) * k);
     }
     return b.build();
   });

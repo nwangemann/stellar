@@ -33,7 +33,10 @@ export function vectorAltAz(v: Vector): AltAz {
   };
 }
 
-export const rotate = (m: Matrix, v: Vector): Vector => [dot(m[0], v), dot(m[1], v), dot(m[2], v)];
+export function rotate(m: Matrix, v: Vector): Vector {
+  'worklet';
+  return [dot(m[0], v), dot(m[1], v), dot(m[2], v)];
+}
 
 /** Takes a horizon direction back to the frame that `m` rotates from. */
 export function unrotate(m: Matrix, v: Vector): Vector {

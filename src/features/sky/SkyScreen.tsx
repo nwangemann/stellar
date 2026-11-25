@@ -1,5 +1,5 @@
 import * as Haptics from 'expo-haptics';
-import { useIsFocused, useRouter } from 'expo-router';
+import { useIsFocused, useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -32,7 +32,6 @@ import { Reticle, RETICLE_SIZE } from '@/ui/components/Reticle';
 import { Text } from '@/ui/components/Text';
 import { Backdrop } from '@/ui/skins/Backdrop';
 import { SkyFrame } from '@/ui/skins/SkyFrame';
-import { Visitor } from '@/ui/skins/Visitor';
 import { useTheme } from '@/ui/useTheme';
 import { AlignPanel, CompassNotice } from './AlignPanel';
 import { Dock, TargetSheet, TopBar } from './Hud';
@@ -41,6 +40,8 @@ import { pluginFor } from './plugins';
 import { SkyLayer } from './SkyLayer';
 import { SunWarning } from './SunWarning';
 import { TimePanel } from './TimePanel';
+import { useDetailsZoom } from './useDetailsZoom';
+import { APPLE_ZOOM, SOURCE_SIZE, ZoomSource } from './ZoomSource';
 import { useSensorPose } from './useSensorPose';
 import { useSky } from './useSky';
 
@@ -112,8 +113,12 @@ export function SkyScreen() {
     return MARKS.filter((m) => ids.has(m.id));
   }, [targetIds]);
 
+  const { zoom, zooming, zoomTo } = useDetailsZoom(view);
   const pose = useSharedValue<Pose>(INITIAL_POSE);
-  const { tracking, accurate, correction } = useSensorPose(pose, followPhone && focused);
+  const { tracking, accurate, correction } = useSensorPose(
+    pose,
+    followPhone && focused && !zooming,
+  );
   const aligning = alignOpen && tracking;
   const { lockedId, offsetX, offsetY } = useFocusLock(
     targets,
@@ -126,12 +131,12 @@ export function SkyScreen() {
   const locked = useMemo(() => sky.find((o) => o.id === lockedId) ?? null, [sky, lockedId]);
 
   useEffect(() => {
-    if (focused) setFind({ following: tracking });
-  }, [focused, tracking, setFind]);
+    if (focused && !zooming) setFind({ following: tracking });
+  }, [focused, zooming, tracking, setFind]);
   // Turns once per request, when the sky is back on screen.
   const turned = useRef<Wanted | null>(null);
   useEffect(() => {
-    if (!wanted || !focused || turned.current === wanted) return;
+    if (!wanted || !focused || zooming || turned.current === wanted) return;
     turned.current = wanted;
     set({ mode: wanted.target.kind === 'constellation' ? 'constellations' : 'identify' });
     const aim = sky.find((o) => o.id === wanted.aimId);
@@ -143,7 +148,7 @@ export function SkyScreen() {
       // Instant with Reduce Motion, as all timings are by default.
       pose.value = withTiming({ ...to }, { duration: TURN_MS, easing: Easing.inOut(Easing.cubic) });
     });
-  }, [wanted, focused, tracking, sky, pose, set]);
+  }, [wanted, focused, zooming, tracking, sky, pose, set]);
   const leading = wanted && !reached && !aligning && (tracking || wanted.byArrow) ? wanted : null;
   const wantedMark = useMemo(() => MARKS.find((m) => m.id === wantedId) ?? null, [wantedId]);
   const wantedUp = sky.some((o) => o.id === wantedId && o.position.alt > 0);
@@ -158,7 +163,7 @@ export function SkyScreen() {
   const drag = useMemo(
     () =>
       Gesture.Pan()
-        .enabled(!tracking || aligning)
+        .enabled(!zooming && (!tracking || aligning))
         .onStart(() => {
           'worklet';
           if (aligning) return;
@@ -182,11 +187,16 @@ export function SkyScreen() {
           'worklet';
           if (aligning) scheduleOnRN(setAligned, true);
         }),
-    [pose, correction, width, fov, tracking, aligning],
+    [pose, correction, width, fov, tracking, aligning, zooming],
   );
   const reticleStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: offsetX.value }, { translateY: offsetY.value }],
   }));
+
+  const { amount } = zoom;
+  // Fades, because the picture cannot zoom with the sky and stops while covered.
+  const cameraStyle = useAnimatedStyle(() => ({ opacity: 1 - amount.value }));
+  const hidden = zooming ? styles.hidden : null;
 
   const onMode = useCallback(
     (id: typeof mode) => {
@@ -213,9 +223,20 @@ export function SkyScreen() {
     },
     [pose],
   );
+  // Kept after closing, because the system asks for the source again on the way back.
+  const [source, setSource] = useState<{ href: Href; centered: boolean } | null>(null);
+  const openSource = useRef<(() => void) | null>(null);
   const onExplore = useCallback(
-    (found: Target) => router.push(detailsRoute(found, skyTime.current?.toISOString())),
-    [router],
+    (found: Target) => {
+      const href = detailsRoute(found, skyTime.current?.toISOString());
+      // Mounts during the zoom, which is long enough for the link to be ready.
+      if (APPLE_ZOOM) setSource({ href, centered: found.kind === 'constellation' });
+      zoomTo(found, (zoomed) => {
+        if (zoomed && openSource.current) openSource.current();
+        else router.push(href);
+      });
+    },
+    [router, zoomTo],
   );
   const onNow = useCallback(() => setOffsetMs(0), []);
   // Aligning compares the sky with the real one, so it needs the present.
@@ -242,31 +263,50 @@ export function SkyScreen() {
 
   return (
     <View style={[styles.fill, { backgroundColor: t.color.sky }]}>
-      {cameraBackdrop ? <CameraBackdrop isActive={focused} /> : null}
+      {cameraBackdrop ? (
+        <Animated.View style={[StyleSheet.absoluteFill, cameraStyle]}>
+          <CameraBackdrop isActive={focused} />
+        </Animated.View>
+      ) : null}
       {t.skin === 'default' ? null : (
         <Backdrop active={focused} pose={pose} overCamera={cameraOn} />
       )}
       <GestureDetector gesture={drag}>
         <View style={styles.fill}>
-          <SkyLayer marks={marks} lines={lines} turn={turn} pose={pose} view={view} />
+          <SkyLayer marks={marks} lines={lines} turn={turn} pose={pose} view={view} zoom={zoom} />
         </View>
       </GestureDetector>
 
-      {t.skin === 'default' ? null : <SkyFrame skin={t.skin} locked={!!locked} />}
+      {t.skin === 'default' || zooming ? null : <SkyFrame skin={t.skin} locked={!!locked} />}
       <Animated.View
         style={[
           styles.reticle,
           { left: width / 2 - RETICLE_SIZE / 2, top: height / 2 - RETICLE_SIZE / 2 },
           reticleStyle,
+          hidden,
         ]}
       >
         <Reticle locked={!!locked} />
       </Animated.View>
 
-      {t.skin === 'starship' && focused ? <Visitor busy={!!locked} /> : null}
+      {source ? (
+        <Animated.View
+          style={[
+            styles.reticle,
+            { left: (width - SOURCE_SIZE) / 2, top: (height - SOURCE_SIZE) / 2 },
+            source.centered ? null : reticleStyle,
+          ]}
+        >
+          <ZoomSource href={source.href} open={openSource} />
+        </Animated.View>
+      ) : null}
 
       <View
-        style={[styles.top, { top: insets.top + t.space.sm, right: t.space.lg, gap: t.space.sm }]}
+        style={[
+          styles.top,
+          { top: insets.top + t.space.sm, right: t.space.lg, gap: t.space.sm },
+          hidden,
+        ]}
       >
         <TopBar
           demo={demo}
@@ -287,6 +327,7 @@ export function SkyScreen() {
             paddingHorizontal: t.space.lg,
             gap: t.space.sm,
           },
+          hidden,
         ]}
       >
         {leading ? (
@@ -310,6 +351,7 @@ export function SkyScreen() {
         style={[
           styles.bottom,
           { bottom: insets.bottom + t.space.lg, paddingHorizontal: t.space.lg, gap: t.space.md },
+          hidden,
         ]}
       >
         {shownCard && target && !aligning ? (
@@ -332,7 +374,7 @@ export function SkyScreen() {
           <Dock mode={mode} onMode={onMode} target={target} onIdentify={onIdentify} />
         )}
       </View>
-      {leading && wantedMark && wantedUp ? (
+      {leading && wantedMark && wantedUp && !zooming ? (
         <FindArrow mark={wantedMark} turn={turn} pose={pose} view={view} />
       ) : null}
     </View>
@@ -341,6 +383,7 @@ export function SkyScreen() {
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
+  hidden: { display: 'none' },
   reticle: { position: 'absolute', pointerEvents: 'none' },
   top: {
     position: 'absolute',
