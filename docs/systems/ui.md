@@ -13,3 +13,4 @@ Settings has a look picker. `src/ui/skins` holds the art; see ADR 14. `useTheme`
 - Do not fade a parent of native glass. `Sheet` scales instead.
 - Glass becomes solid with Reduce Transparency.
 - Glass & chrome keeps the sky itself nearly plain. Full chrome shows only on other screens.
+- `Visitor` is a rare random alien on the Starship sky screen, with odds in `visits.ts`. It stays away during lock-on, leaves on a tap and is hidden from screen readers.

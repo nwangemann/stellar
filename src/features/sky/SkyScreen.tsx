@@ -22,6 +22,7 @@ import { Sheet } from '@/ui/components/Sheet';
 import { Text } from '@/ui/components/Text';
 import { Backdrop } from '@/ui/skins/Backdrop';
 import { SkyFrame } from '@/ui/skins/SkyFrame';
+import { Visitor } from '@/ui/skins/Visitor';
 import { useTheme } from '@/ui/useTheme';
 import { pluginFor, PLUGINS } from './plugins';
 import { SkyLayer } from './SkyLayer';
@@ -114,6 +115,8 @@ export function SkyScreen() {
       >
         <Reticle locked={!!locked} />
       </Animated.View>
+
+      {t.skin === 'starship' && focused ? <Visitor busy={!!locked} /> : null}
 
       <View style={[styles.top, { top: insets.top + t.space.sm, paddingHorizontal: t.space.lg }]}>
         <Button variant="quiet" label="Logbook" onPress={() => router.push('/logbook')} />

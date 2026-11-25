@@ -12,3 +12,4 @@
 - The Capture button is now Identify.
 - Added the CanvasKit licence notice.
 - Selectable looks in Settings: Default, Starship, Glass & chrome and Needlepoint.
+- A goofy alien occasionally visits the Starship sky.
