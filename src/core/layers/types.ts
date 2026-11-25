@@ -2,9 +2,9 @@ import type { SkyObject } from '../catalog/types';
 
 export type ModeId = 'identify' | 'constellations' | 'layers';
 
-/** What a lock refers to: usually the star itself, or the figure it belongs to. */
+/** What a lock refers to: usually the object itself, or the figure it belongs to. */
 export interface Target {
-  readonly kind: 'star' | 'constellation';
+  readonly kind: SkyObject['kind'] | 'constellation';
   readonly id: string;
   readonly name: string;
 }

@@ -2,7 +2,7 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step: 1.1 in [planets](planets.md).**
+**Next step: 1.4 in [planets](planets.md).**
 
 ## Queue
 
@@ -10,7 +10,7 @@ Sizes are rough estimates in steps. A step should fit in one session.
 
 | #   | Task                                  | Steps | Status     | Needs first                           |
 | --- | ------------------------------------- | ----- | ---------- | ------------------------------------- |
-| 1   | [Moon, Sun and planets](planets.md)   | 4     | Ready      | -                                     |
+| 1   | [Moon, Sun and planets](planets.md)   | 4     | 3 of 4     | -                                     |
 | 2   | [Real sensors](sensors.md)            | 5     | Ready      | 2.2 needs a rebuild, 2.5 a real phone |
 | 3   | [Simulator tests](simulator-tests.md) | 3     | Needs user | OK to install Java and Maestro        |
 | 4   | [Time travel slider](time-travel.md)  | 2     | Ready      | Better after 1                        |
@@ -18,7 +18,7 @@ Sizes are rough estimates in steps. A step should fit in one session.
 
 ## Small fixes
 
-- 6. Alien visitor: see it on the simulator. It waits during lock-on, so check that it appears often enough.
+- 6. Alien visitor: see it on the simulator. It waits during lock-on, so check that it appears often enough. On 2026-11-24 it showed on two launches while a target was locked, which it should not.
 
 ## Needs the user
 

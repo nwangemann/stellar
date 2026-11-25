@@ -12,6 +12,8 @@ Everything is bundled in `src/data`. The app makes no network requests for sky d
 
 Rebuild with `node scripts/build-catalog.mjs <dir>`, where `<dir>` holds `hyg/hyg_v44.csv.gz`, `sc/<culture>/index.json`, `api/papers.json` and `api/planets.json`. It writes one record per line to keep searches small. The script fails if a line star is missing.
 
+The app does not bundle these test values: `src/core/astro/fixtures/horizons.json` holds airless apparent positions from the JPL Horizons API (DE441, observer tables, quantities 2 and 4), fetched 2026-11-24. Sites are at 0 km: 40.7128° N, 74.006° W and 33.8688° S, 151.2093° E.
+
 ## Limits
 
 - HYG carries some doubtful values, such as type F7V for Dubhe. Colour words use B−V instead.

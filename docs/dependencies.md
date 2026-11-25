@@ -8,6 +8,7 @@ npm is recorded in ADR 0008. `npm run docs:check` fails if this table and packag
 | -------------------------------- | ---------------------------------- | ------- | ---- |
 | `@expo/metro-runtime`            | Web bundling runtime               | MIT     | 0009 |
 | `@shopify/react-native-skia`     | Sky overlay rendering              | MIT     | 0004 |
+| `astronomy-engine`               | Moon, Sun and planet positions     | MIT     | 0015 |
 | `expo`                           | App framework                      | MIT     | 0002 |
 | `expo-constants`                 | Expo Router requirement            | MIT     | 0002 |
 | `expo-dev-client`                | Development builds                 | MIT     | 0002 |

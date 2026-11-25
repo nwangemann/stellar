@@ -16,6 +16,7 @@ import { useSettings } from '@/state/settings';
 import { Button } from '@/ui/components/Button';
 import { FactRow } from '@/ui/components/FactRow';
 import { GlassPanel } from '@/ui/components/GlassPanel';
+import { IconButton } from '@/ui/components/IconButton';
 import { ModeSwitcher } from '@/ui/components/ModeSwitcher';
 import { Reticle, RETICLE_SIZE } from '@/ui/components/Reticle';
 import { Sheet } from '@/ui/components/Sheet';
@@ -26,6 +27,7 @@ import { Visitor } from '@/ui/skins/Visitor';
 import { useTheme } from '@/ui/useTheme';
 import { pluginFor, PLUGINS } from './plugins';
 import { SkyLayer } from './SkyLayer';
+import { SunWarning } from './SunWarning';
 import { useSky } from './useSky';
 
 const FOV = deg(60);
@@ -118,12 +120,25 @@ export function SkyScreen() {
 
       {t.skin === 'starship' && focused ? <Visitor busy={!!locked} /> : null}
 
-      <View style={[styles.top, { top: insets.top + t.space.sm, paddingHorizontal: t.space.lg }]}>
-        <Button variant="quiet" label="Logbook" onPress={() => router.push('/logbook')} />
-        <Text size="caption" muted={t.skin === 'default'}>
-          {demo ? 'Demo location' : 'Your sky'}
-        </Text>
-        <Button variant="quiet" label="Settings" onPress={() => router.push('/settings')} />
+      <View
+        style={[styles.top, { top: insets.top + t.space.sm, right: t.space.lg, gap: t.space.sm }]}
+      >
+        {demo ? (
+          <Text size="caption" muted={t.skin === 'default'}>
+            Demo location
+          </Text>
+        ) : null}
+        <IconButton icon="book" label="Logbook" onPress={() => router.push('/logbook')} />
+        <IconButton icon="gear" label="Settings" onPress={() => router.push('/settings')} />
+      </View>
+
+      <View
+        style={[
+          styles.warning,
+          { top: insets.top + t.space.sm + t.hit + t.space.sm, paddingHorizontal: t.space.lg },
+        ]}
+      >
+        <SunWarning sky={sky} pose={pose} camera={cameraBackdrop && cameraAvailable} />
       </View>
 
       <View
@@ -138,13 +153,15 @@ export function SkyScreen() {
             {card.rows.map((r) => (
               <FactRow key={r.label} {...r} />
             ))}
-            <View style={{ marginTop: t.space.md }}>
-              <Button
-                variant="quiet"
-                label={target.kind === 'star' ? 'Star details' : 'Explore constellation'}
-                onPress={() => explore(target)}
-              />
-            </View>
+            {target.kind === 'body' ? null : (
+              <View style={{ marginTop: t.space.md }}>
+                <Button
+                  variant="quiet"
+                  label={target.kind === 'star' ? 'Star details' : 'Explore constellation'}
+                  onPress={() => explore(target)}
+                />
+              </View>
+            )}
           </Sheet>
         ) : null}
         {message ? (
@@ -166,13 +183,11 @@ const styles = StyleSheet.create({
   reticle: { position: 'absolute', pointerEvents: 'none' },
   top: {
     position: 'absolute',
-    left: 0,
-    right: 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     pointerEvents: 'box-none',
   },
+  warning: { position: 'absolute', left: 0, right: 0, pointerEvents: 'none' },
   bottom: { position: 'absolute', left: 0, right: 0, pointerEvents: 'box-none' },
   center: { textAlign: 'center' },
 });

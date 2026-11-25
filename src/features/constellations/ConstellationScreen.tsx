@@ -27,6 +27,7 @@ export function ConstellationScreen() {
     return <Text style={{ padding: t.space.lg }}>This constellation is not in the catalog.</Text>;
 
   const stories = storiesFor(id);
+  const tabs = stories.length > 0 ? TABS : TABS.filter((label) => label !== 'Mythology');
   const story = tab === 'Mythology' ? stories[chosen] : undefined;
   const lines = story?.figure ? figureLines(story.figure) : c.lines;
   const stars = [...starsIn(c.lines)].sort((a, b) => a.magnitude - b.magnitude);
@@ -36,7 +37,7 @@ export function ConstellationScreen() {
     <ScrollView contentContainerStyle={{ padding: t.space.lg, gap: t.space.md }}>
       <Stack.Screen options={{ title: c.name }} />
       <View accessibilityRole="tablist" style={{ flexDirection: 'row' }}>
-        {TABS.map((label) => (
+        {tabs.map((label) => (
           <Chip
             key={label}
             role="tab"
@@ -46,7 +47,7 @@ export function ConstellationScreen() {
           />
         ))}
       </View>
-      {tab === 'Mythology' && stories.length > 0 ? (
+      {tab === 'Mythology' ? (
         <View accessibilityRole="tablist" style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
           {stories.map((s, i) => (
             <Chip
@@ -90,30 +91,26 @@ export function ConstellationScreen() {
         </View>
       ) : null}
 
-      {tab === 'Mythology' ? (
+      {story ? (
         <GlassPanel style={{ gap: t.space.sm }}>
-          {story ? (
-            <>
-              <Text size="caption" muted>
-                {story.culture}. {story.kind}.
-              </Text>
-              <Text size="title">{story.title}</Text>
-              <Text>{story.text}</Text>
-              {story.figure ? null : (
-                <Text size="caption" muted>
-                  Shown with the modern lines, because no separate figure is bundled.
-                </Text>
-              )}
-              <LinkRow title="Read the source" detail={story.source.label} url={story.source.url} />
-            </>
-          ) : (
-            <Text muted>No stories are bundled for this constellation yet.</Text>
+          <Text size="caption" muted>
+            {story.culture}. {story.kind}.
+          </Text>
+          <Text size="title">{story.title}</Text>
+          <Text>{story.text}</Text>
+          {story.figure ? null : (
+            <Text size="caption" muted>
+              Shown with the modern lines, because no separate figure is bundled.
+            </Text>
           )}
+          <LinkRow title="Read the source" detail={story.source.label} url={story.source.url} />
         </GlassPanel>
       ) : null}
       <Text size="caption" muted>
-        Figures: Stellarium sky cultures, CC BY-SA. Stories are short summaries written for Stellar,
-        CC BY-SA 4.0, and are not endorsed by the cultures they describe.
+        Figures: Stellarium sky cultures, CC BY-SA.
+        {stories.length > 0
+          ? ' Stories are short summaries written for Stellar, CC BY-SA 4.0, and are not endorsed by the cultures they describe.'
+          : null}
       </Text>
     </ScrollView>
   );

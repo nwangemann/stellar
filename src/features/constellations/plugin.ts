@@ -1,7 +1,7 @@
 import { constellationOf, CONSTELLATIONS, segments, starsIn } from '@/core/catalog/catalog';
 import { aboveHorizon } from '@/core/catalog/sky';
 import type { LayerPlugin } from '@/core/layers/types';
-import { skyCard, starTarget } from '@/features/sky/skyCard';
+import { skyCard, skyTarget } from '@/features/sky/skyCard';
 import { storiesFor } from './stories';
 
 const SEGMENTS = CONSTELLATIONS.flatMap((c) => segments(c.lines));
@@ -22,7 +22,7 @@ export const constellationsPlugin: LayerPlugin = {
   selectable: (sky) => sky.filter((o) => constellationOf(o.id) && aboveHorizon(o)),
   target: (o) => {
     const c = constellationOf(o.id);
-    return c ? { kind: 'constellation', id: c.id, name: c.name } : starTarget(o);
+    return c ? { kind: 'constellation', id: c.id, name: c.name } : skyTarget(o);
   },
   card: (o) => {
     const c = constellationOf(o.id);
@@ -34,7 +34,9 @@ export const constellationsPlugin: LayerPlugin = {
       rows: [
         { label: 'Meaning', value: c.english },
         { label: 'Brightest line star', value: brightest.name },
-        { label: 'Stories', value: cultures ? `${cultures} cultures` : 'None bundled yet' },
+        ...(cultures
+          ? [{ label: 'Stories', value: `${cultures} ${cultures === 1 ? 'culture' : 'cultures'}` }]
+          : []),
       ],
     };
   },

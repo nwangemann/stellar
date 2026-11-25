@@ -1,6 +1,6 @@
 import { aboveHorizon } from '@/core/catalog/sky';
 import type { LayerPlugin } from '@/core/layers/types';
-import { skyCard, starTarget } from '@/features/sky/skyCard';
+import { skyCard, skyTarget } from '@/features/sky/skyCard';
 
 export const layersPlugin: LayerPlugin = {
   id: 'layers',
@@ -8,6 +8,6 @@ export const layersPlugin: LayerPlugin = {
   draw: (sky) => sky,
   lines: () => [],
   selectable: (sky) => sky.filter((o) => o.magnitude < 3 && aboveHorizon(o)),
-  target: starTarget,
+  target: skyTarget,
   card: skyCard,
 };

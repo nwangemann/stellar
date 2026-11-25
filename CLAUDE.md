@@ -7,6 +7,7 @@
 - `src/core` stays free of React and Expo imports.
 - Never read `src/data/*.json` whole; look up records with `grep` and cap output with `head -c`.
 - Run `npm run check` before declaring work done.
+- Keep testing and validation to a minimum. This is not in production, so favour progress over stability and security: `npm run check` is usually enough. Add a few tests only where mistakes are likely and hard to see; skip exhaustive cases, regression sweeps and repeat simulator checks.
 
 ## Session routine
 

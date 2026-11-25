@@ -8,10 +8,12 @@ type Props = PropsWithChildren<{
   kind: 'primary' | 'quiet' | 'chip' | 'chipOn';
   pressed: boolean;
   disabled?: boolean;
+  /** A circle of the minimum touch size, for an icon. */
+  round?: boolean;
 }>;
 
 /** The body of a button or chip in the non-default looks. */
-export function SkinSurface({ kind, pressed, disabled = false, children }: Props) {
+export function SkinSurface({ kind, pressed, disabled = false, round = false, children }: Props) {
   const t = useTheme();
   const onGlass = useContext(OnGlass);
   const chip = kind === 'chip' || kind === 'chipOn';
@@ -20,7 +22,8 @@ export function SkinSurface({ kind, pressed, disabled = false, children }: Props
     minHeight: t.hit,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: chip ? t.space.md : t.space.lg,
+    ...(round ? { width: t.hit, height: t.hit } : null),
+    paddingHorizontal: round ? 0 : chip ? t.space.md : t.space.lg,
     borderRadius: t.radius.pill,
   };
   if (kind === 'chip' && t.skin !== 'glass')

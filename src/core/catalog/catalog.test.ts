@@ -1,3 +1,5 @@
+import { BODY_IDS, bodyPosition, type BodyId } from '../astro/bodies';
+import { toAltAz } from '../astro/horizontal';
 import { STORIES } from '../../data/mythology';
 import {
   constellationById,
@@ -41,4 +43,19 @@ test('every story points at a known constellation, figure and source', () => {
 test('Polaris stands at about the latitude of the observer', () => {
   const sky = createSky(DEMO_OBSERVER, new Date('2026-11-25T03:00:00Z'));
   expect(Math.abs(sky.find((o) => o.name === 'Polaris')!.position.alt - 40)).toBeLessThan(1);
+});
+test('bodies are in the sky, precessed only once, and are not stars or figures', () => {
+  const date = new Date('2026-11-25T03:00:00Z');
+  const bodies = createSky(DEMO_OBSERVER, date).filter((o) => o.kind === 'body');
+  expect(bodies.map((o) => o.id)).toEqual([...BODY_IDS]);
+  for (const o of bodies) {
+    const expected = toAltAz(
+      bodyPosition(o.id as BodyId, DEMO_OBSERVER, date),
+      DEMO_OBSERVER,
+      date,
+    );
+    expect(o.position).toEqual(expected);
+    expect(starById(o.id)).toBeUndefined();
+    expect(constellationOf(o.id)).toBeUndefined();
+  }
 });

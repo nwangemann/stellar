@@ -6,6 +6,7 @@ import type { SkyObject } from '@/core/catalog/types';
 import type { Pose } from '@/core/pose/pose';
 import { project, type Viewport } from '@/core/projection/projection';
 import { useTheme } from '@/ui/useTheme';
+import { BodyMarks } from './BodyMarks';
 
 export type SkyCanvasProps = {
   objects: readonly SkyObject[];
@@ -17,8 +18,10 @@ export type SkyCanvasProps = {
 export default function SkyCanvas({ objects, lines, pose, view }: SkyCanvasProps) {
   const t = useTheme();
   const skin = t.skin;
-  const bright = useMemo(() => objects.filter((o) => o.magnitude < 2.5), [objects]);
-  const faint = useMemo(() => objects.filter((o) => o.magnitude >= 2.5), [objects]);
+  const points = useMemo(() => objects.filter((o) => o.kind === 'star'), [objects]);
+  const bodies = useMemo(() => objects.filter((o) => o.kind === 'body'), [objects]);
+  const bright = useMemo(() => points.filter((o) => o.magnitude < 2.5), [points]);
+  const faint = useMemo(() => points.filter((o) => o.magnitude >= 2.5), [points]);
 
   // Pose is an argument: Reanimated only tracks shared values read directly in the derived value.
   const stars = (group: readonly SkyObject[], at: Pose) => {
@@ -78,6 +81,7 @@ export default function SkyCanvas({ objects, lines, pose, view }: SkyCanvasProps
           strokeWidth={2.8}
           strokeCap="round"
         />
+        <BodyMarks bodies={bodies} pose={pose} view={view} />
       </Canvas>
     );
   if (skin === 'starship' || skin === 'glass')
@@ -92,6 +96,7 @@ export default function SkyCanvas({ objects, lines, pose, view }: SkyCanvasProps
           <BlurMask blur={skin === 'starship' ? 8 : 4} style="normal" />
         </Path>
         <Path path={brightPath} color={t.color.star} />
+        <BodyMarks bodies={bodies} pose={pose} view={view} />
       </Canvas>
     );
   return (
@@ -99,6 +104,7 @@ export default function SkyCanvas({ objects, lines, pose, view }: SkyCanvasProps
       <Path path={linePath} color={t.color.line} style="stroke" strokeWidth={1.5} />
       <Path path={faintPath} color={t.color.star} opacity={0.6} />
       <Path path={brightPath} color={t.color.star} />
+      <BodyMarks bodies={bodies} pose={pose} view={view} />
     </Canvas>
   );
 }

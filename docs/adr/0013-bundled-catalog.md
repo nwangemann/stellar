@@ -1,6 +1,6 @@
 # 13. Bundled sky data
 
-- Status: accepted
+- Status: accepted; amended by ADR 15
 - Date: 2026-11-24
 
 ## Decision

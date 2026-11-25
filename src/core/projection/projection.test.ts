@@ -30,7 +30,13 @@ test('dragging right moves the sky right, across north', () => {
   expect(applyDrag(pose, 10, 0, 1).az).toBe(350);
 });
 test('hit test picks the closest, but keeps the locked target a little longer', () => {
-  const star = (id: string, az: number) => ({ id, name: id, magnitude: 1, position: at(0, az) });
+  const star = (id: string, az: number) => ({
+    kind: 'star' as const,
+    id,
+    name: id,
+    magnitude: 1,
+    position: at(0, az),
+  });
   const sky = [star('far', 8), star('near', 1)];
   expect(hitTest(sky, pose, view, 44, null)!.object.id).toBe('near');
   expect(hitTest(sky, pose, view, 44, 'far')!.object.id).toBe('far');

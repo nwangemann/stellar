@@ -2,7 +2,9 @@
 
 `src/ui/tokens` holds the standard and night themes. A test checks that every night color has no green or blue.
 
-Components: Text, GlassPanel, Button, Chip, Reticle, Sheet, ModeSwitcher and ScreenHeader. They read the theme through `useTheme`. System-drawn controls may ignore the theme, so check night vision on iOS when adding one.
+Components: Text, GlassPanel, Button, IconButton, Chip, Reticle, Sheet, ModeSwitcher and ScreenHeader. They read the theme through `useTheme`. System-drawn controls may ignore the theme, so check night vision on iOS when adding one.
+
+On the sky screen, Logbook and Settings are round `IconButton`s at the top right, with the same surface as other buttons. Their icons are drawn with views, so there is no icon package.
 
 ## Looks
 
@@ -14,3 +16,9 @@ Settings has a look picker. `src/ui/skins` holds the art; see ADR 14. `useTheme`
 - Glass becomes solid with Reduce Transparency.
 - Glass & chrome keeps the sky itself nearly plain. Full chrome shows only on other screens.
 - `Visitor` is a rare random alien on the Starship sky screen, with odds in `visits.ts`. It stays away during lock-on, leaves on a tap and is hidden from screen readers.
+
+## Sky marks
+
+`BodyMarks` draws the Sun (rays), the Moon (phase, with its bright limb towards the Sun), planets (ringed dot) and Saturn (tilted ring). Shapes differ, not just colors, so they survive night vision. Sizes are fixed and larger than life. Colors are the `sun`, `moon`, `moonDark` and `planet` tokens.
+
+`SunWarning` shows while the Sun is up and either the view is within 40° of it or the camera is on. The camera case ignores direction because the pose does not follow the phone yet; revisit it with real sensors (backlog item 2).

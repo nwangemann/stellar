@@ -7,7 +7,10 @@ export interface AltAz {
   readonly az: Degrees;
 }
 
-/** Equatorial coordinates (J2000). RA is held in degrees, not hours. */
+/**
+ * Equatorial coordinates. RA is held in degrees, not hours.
+ * Catalog stars are J2000; `precess` and `bodyPosition` return coordinates of date.
+ */
 export interface RaDec {
   readonly kind: 'radec';
   readonly ra: Degrees;
