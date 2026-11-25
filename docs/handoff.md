@@ -63,6 +63,6 @@ Not verified: camera image, haptics, permission prompts, location, release build
 
 - Say which iOS device models and iOS versions to test on. A physical iOS device is confirmed for phase 4 (ADR 11).
 - Do the user steps in the device checklist. The bundle identifier is `com.nate.stellar`.
-- The remote is a private GitHub repo, `nwangemann/stellar`. GitHub CI is part of the original plan and is not set up.
+- The remote is a private GitHub repo, `nwangemann/stellar`. GitHub Actions runs `npm run check` on pull requests and `main`. It does not build the app.
 
 Update this file only when project state changes. Progress on tasks goes in the backlog.
