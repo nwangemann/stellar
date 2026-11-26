@@ -17,12 +17,12 @@ Device checks, tuning and calibration are deferred to the end of development, in
 | Details, mythology, search, find in sky, time travel | Built; checked on the iOS simulator, except the body screen |
 | Logbook                                              | Built as data cards; photo capture not started              |
 | Sensors, compass alignment, camera field of view     | Built; untried on a phone                                   |
-| Layers mode                                          | Hidden until it has a real layer                            |
+| Layers mode                                          | Bright satellites, moving, with a card; next pass in 10.4   |
 | Physical iPhone, release build, Android              | Not started (backlog task 8)                                |
 
 ## What has been verified
 
-- `npm run check` passes, with 194 tests in 21 suites. GitHub Actions runs it on pull requests and `main`; it does not build the app.
+- `npm run check` passes, with 205 tests in 24 suites. GitHub Actions runs it on pull requests and `main`; it does not build the app.
 - Both Husky hooks ran: a bad commit message was rejected and valid commits passed the full checks.
 - The iOS debug build compiles. Expo Doctor passes 20/20 with Homebrew on the path.
 - On the iPhone 17 Pro simulator (iOS 26.5): the sky, drag, lock-on, capture to SQLite, logbook, mode swipe, saved settings, night vision, every look, the star and constellation screens, and the Sun, Moon and planet marks with a faked date. On 2026-11-25 also: search, find in sky while dragging, the mythology tab, time travel and the settings switches.

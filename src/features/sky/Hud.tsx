@@ -44,7 +44,8 @@ export const TopBar = memo(function TopBar(props: TopBarProps) {
   );
 });
 
-const DETAILS_LABEL: Record<Target['kind'], string> = {
+/** Satellites have no details screen yet (backlog step 10.4). */
+const DETAILS_LABEL: Partial<Record<Target['kind'], string>> = {
   star: 'Star details',
   body: 'Details',
   constellation: 'Explore constellation',
@@ -58,19 +59,18 @@ export const TargetSheet = memo(function TargetSheet({
   onExplore,
 }: TargetSheetProps) {
   const t = useTheme();
+  const label = DETAILS_LABEL[target.kind];
   return (
     <Sheet>
       <Text size="title">{card.title}</Text>
       {card.rows.map((r) => (
         <FactRow key={r.label} {...r} />
       ))}
-      <View style={{ marginTop: t.space.md }}>
-        <Button
-          variant="quiet"
-          label={DETAILS_LABEL[target.kind]}
-          onPress={() => onExplore(target)}
-        />
-      </View>
+      {label ? (
+        <View style={{ marginTop: t.space.md }}>
+          <Button variant="quiet" label={label} onPress={() => onExplore(target)} />
+        </View>
+      ) : null}
     </Sheet>
   );
 });

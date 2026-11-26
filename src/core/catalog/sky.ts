@@ -3,6 +3,8 @@ import type { Observer } from '../astro/coordinates';
 import { skyRotation, toAltAz } from '../astro/horizontal';
 import { moonPhase } from '../astro/phase';
 import { altAzVector, raDecVector, rotate, vectorAltAz, type Vector } from '../astro/vector';
+import type { Satellite } from '../satellites/orbit';
+import { satelliteObjects } from '../satellites/sky';
 import { deg } from '../units';
 import { constellationOf, STARS } from './catalog';
 import type { SkyMark, SkyObject, SkyTurn, StarMark } from './types';
@@ -35,8 +37,12 @@ export const BODY_NAMES: Record<BodyId, string> = {
   saturn: 'Saturn',
 };
 
-/** The whole sphere, so lines that cross the horizon stay intact. */
-export function createSky(observer: Observer, date: Date): SkyObject[] {
+/** The whole sphere, so lines that cross the horizon stay intact. Satellites come last. */
+export function createSky(
+  observer: Observer,
+  date: Date,
+  satellites: readonly Satellite[] = [],
+): SkyObject[] {
   const rotation = skyRotation(observer, date);
   const stars = visible.map((s, i): SkyObject => ({
     kind: 'star',
@@ -53,7 +59,7 @@ export function createSky(observer: Observer, date: Date): SkyObject[] {
     magnitude: bodyMagnitude(id, date),
     position: toAltAz(bodyPosition(id, observer, date), observer, date),
   }));
-  return [...stars, ...bodies];
+  return [...stars, ...bodies, ...satelliteObjects(satellites, { observer, date })];
 }
 
 /** The part of a sky that the UI thread needs to place `MARKS`. */
@@ -63,9 +69,13 @@ export function skyTurn(sky: readonly SkyObject[], observer: Observer, date: Dat
     BODY_IDS.map((id) => [id, altAzVector(places.get(id)!)]),
   ) as Record<BodyId, Vector>;
   const { lit, towardSun } = moonPhase(places.get('moon')!, places.get('sun')!);
+  const satellites = Object.fromEntries(
+    sky.filter((o) => o.kind === 'satellite').map((o) => [o.id, altAzVector(o.position)]),
+  );
   return {
     rotation: skyRotation(observer, date),
     bodies,
     moon: { lit, towardSun: altAzVector(towardSun) },
+    satellites,
   };
 }

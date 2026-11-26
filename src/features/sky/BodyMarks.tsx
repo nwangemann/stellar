@@ -1,6 +1,6 @@
 import { BlurMask, Path, Skia, type SkPathBuilder } from '@shopify/react-native-skia';
 import { useMemo } from 'react';
-import { useDerivedValue, type SharedValue } from 'react-native-reanimated';
+import { useDerivedValue, type DerivedValue, type SharedValue } from 'react-native-reanimated';
 import type { BodyId } from '@/core/astro/bodies';
 import { litOutline } from '@/core/astro/phase';
 import type { SkyTurn } from '@/core/catalog/types';
@@ -10,7 +10,7 @@ import { useTheme } from '@/ui/useTheme';
 
 type Props = {
   bodies: readonly BodyId[];
-  turn: SharedValue<SkyTurn>;
+  turn: DerivedValue<SkyTurn>;
   lens: SharedValue<Lens>;
   zoom: { aim: SharedValue<ZoomAim | null>; amount: SharedValue<number> };
 };

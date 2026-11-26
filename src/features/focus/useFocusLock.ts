@@ -3,6 +3,7 @@ import {
   useFrameCallback,
   useSharedValue,
   withTiming,
+  type DerivedValue,
   type SharedValue,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
@@ -15,7 +16,7 @@ const RADIUS = 44;
 
 export function useFocusLock(
   targets: readonly SkyMark[],
-  turn: SharedValue<SkyTurn>,
+  turn: DerivedValue<SkyTurn>,
   pose: SharedValue<Pose>,
   view: Viewport,
   onLock: () => void,

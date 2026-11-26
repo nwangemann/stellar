@@ -1,6 +1,10 @@
 import { memo, useMemo } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  type DerivedValue,
+  type SharedValue,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SkyMark, SkyTurn } from '@/core/catalog/types';
 import type { Pose } from '@/core/pose/pose';
@@ -20,7 +24,7 @@ const BOTTOM = 190;
 
 type ArrowProps = {
   mark: SkyMark;
-  turn: SharedValue<SkyTurn>;
+  turn: DerivedValue<SkyTurn>;
   pose: SharedValue<Pose>;
   view: Viewport;
 };
@@ -42,10 +46,13 @@ export const FindArrow = memo(function FindArrow({ mark, turn, pose, view }: Arr
   const style = useAnimatedStyle(() => {
     const now = turn.value;
     const lens = lensFor(pose.value, view);
+    const place = mark.kind === 'body' ? now.bodies[mark.id] : now.satellites[mark.id];
     const arrow =
       mark.kind === 'star'
         ? arrowTo(starLens(lens, now), mark.direction, box, GAP)
-        : arrowTo(lens, now.bodies[mark.id], box, GAP);
+        : place
+          ? arrowTo(lens, place, box, GAP)
+          : null;
     return {
       opacity: arrow ? 1 : 0,
       transform: [

@@ -4,9 +4,9 @@ import { skyCard, skyTarget } from '@/features/sky/skyCard';
 export const identifyPlugin: LayerPlugin = {
   id: 'identify',
   label: 'Stars',
-  draw: (marks) => marks,
+  draw: (marks) => marks.filter((m) => m.kind !== 'satellite'),
   lines: () => [],
-  selects: (o) => o.magnitude < 4.5,
+  selects: (o) => o.kind !== 'satellite' && o.magnitude < 4.5,
   target: skyTarget,
   card: skyCard,
 };

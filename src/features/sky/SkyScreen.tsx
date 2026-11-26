@@ -12,6 +12,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 import { MARKS } from '@/core/catalog/sky';
+import { satelliteMarks } from '@/core/satellites/sky';
 import type { Target } from '@/core/layers/types';
 import { dragAlignment } from '@/core/pose/alignment';
 import { applyDrag, facing, INITIAL_POSE, turnStart, type Pose } from '@/core/pose/pose';
@@ -27,6 +28,7 @@ import {
   useCameraFocalLength,
 } from '@/services/camera/CameraBackdrop';
 import { useFind, type Wanted } from '@/state/find';
+import { useOrbits } from '@/state/orbits';
 import { useSettings } from '@/state/settings';
 import { Reticle, RETICLE_SIZE } from '@/ui/components/Reticle';
 import { Text } from '@/ui/components/Text';
@@ -35,13 +37,14 @@ import { SkyFrame } from '@/ui/skins/SkyFrame';
 import { useTheme } from '@/ui/useTheme';
 import { AlignPanel, CompassNotice } from './AlignPanel';
 import { Dock, TargetSheet, TopBar } from './Hud';
-import { detailsRoute } from './details';
+import { detailsRoute, hasDetails } from './details';
 import { pluginFor } from './plugins';
 import { SkyLayer } from './SkyLayer';
 import { SunWarning } from './SunWarning';
 import { TimePanel } from './TimePanel';
 import { useDetailsZoom } from './useDetailsZoom';
 import { APPLE_ZOOM, SOURCE_SIZE, ZoomSource } from './ZoomSource';
+import { useMovingSky } from './useMovingSky';
 import { useSensorPose } from './useSensorPose';
 import { useSky } from './useSky';
 
@@ -88,21 +91,30 @@ export function SkyScreen() {
     return () => clearTimeout(timer);
   }, [message]);
 
-  const { sky, turn, realSun, moment, demo } = useSky(offsetMs);
+  const satellites = useOrbits((s) => s.satellites);
+  const { sky, turn, realSun, moment, demo } = useSky(offsetMs, satellites);
   // A ref, so the handlers stay stable while the time moves. Null in the present.
   const skyTime = useRef<Date | null>(null);
   useEffect(() => {
     skyTime.current = offsetMs === 0 ? null : moment.date;
   }, [offsetMs, moment]);
   const plugin = pluginFor(mode);
+  const moving = useMovingSky(
+    turn,
+    satellites,
+    moment.observer,
+    offsetMs,
+    focused && plugin.id === 'layers',
+  );
+  const allMarks = useMemo(() => [...MARKS, ...satelliteMarks(satellites)], [satellites]);
   const cameraOn = cameraBackdrop && cameraAvailable;
   const fov = cameraOn ? coverFieldOfView(width, height, focalLength) : OPEN_SKY_FOV;
   const view: Viewport = useMemo(
     () => ({ width: px(width), height: px(height), horizontalFov: fov }),
     [width, height, fov],
   );
-  const marks = useMemo(() => plugin.draw(MARKS), [plugin]);
-  const lines = useMemo(() => plugin.lines(MARKS), [plugin]);
+  const marks = useMemo(() => plugin.draw(allMarks), [plugin, allMarks]);
+  const lines = useMemo(() => plugin.lines(allMarks), [plugin, allMarks]);
   // A string, so the targets keep their identity until the set changes.
   const targetIds = useMemo(
     () => sky.flatMap((o) => (plugin.selects(o) || o.id === wantedId ? [o.id] : [])).join(' '),
@@ -110,8 +122,8 @@ export function SkyScreen() {
   );
   const targets = useMemo(() => {
     const ids = new Set(targetIds.split(' '));
-    return MARKS.filter((m) => ids.has(m.id));
-  }, [targetIds]);
+    return allMarks.filter((m) => ids.has(m.id));
+  }, [targetIds, allMarks]);
 
   const { zoom, zooming, zoomTo } = useDetailsZoom(view);
   const pose = useSharedValue<Pose>(INITIAL_POSE);
@@ -122,7 +134,7 @@ export function SkyScreen() {
   const aligning = alignOpen && tracking;
   const { lockedId, offsetX, offsetY } = useFocusLock(
     targets,
-    turn,
+    moving,
     pose,
     view,
     tapHaptic,
@@ -138,7 +150,11 @@ export function SkyScreen() {
   useEffect(() => {
     if (!wanted || !focused || zooming || turned.current === wanted) return;
     turned.current = wanted;
-    set({ mode: wanted.target.kind === 'constellation' ? 'constellations' : 'identify' });
+    const { kind } = wanted.target;
+    set({
+      mode:
+        kind === 'constellation' ? 'constellations' : kind === 'satellite' ? 'layers' : 'identify',
+    });
     const aim = sky.find((o) => o.id === wanted.aimId);
     if (!aim || tracking || wanted.byArrow) return;
     const to = facing(aim.position);
@@ -150,7 +166,10 @@ export function SkyScreen() {
     });
   }, [wanted, focused, zooming, tracking, sky, pose, set]);
   const leading = wanted && !reached && !aligning && (tracking || wanted.byArrow) ? wanted : null;
-  const wantedMark = useMemo(() => MARKS.find((m) => m.id === wantedId) ?? null, [wantedId]);
+  const wantedMark = useMemo(
+    () => allMarks.find((m) => m.id === wantedId) ?? null,
+    [allMarks, wantedId],
+  );
   const wantedUp = sky.some((o) => o.id === wantedId && o.position.alt > 0);
   const onCancelFind = useCallback(() => setFind({ wanted: null }), [setFind]);
   // The request lasts as long as its lock, because only it makes a faint star a target.
@@ -205,9 +224,22 @@ export function SkyScreen() {
     },
     [set, setFind],
   );
+  // A satellite's card changes by the second, while the sky's moment moves once a minute.
+  const lockedSatellite = locked?.kind === 'satellite';
+  const [cardNow, setCardNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!lockedSatellite) return;
+    const timer = setInterval(() => setCardNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [lockedSatellite]);
+  const cardMoment = useMemo(
+    () =>
+      lockedSatellite ? { observer: moment.observer, date: new Date(cardNow + offsetMs) } : moment,
+    [lockedSatellite, moment, cardNow, offsetMs],
+  );
   const card = useMemo(
-    () => (locked ? plugin.card(locked, moment) : null),
-    [plugin, locked, moment],
+    () => (locked ? plugin.card(locked, cardMoment) : null),
+    [plugin, locked, cardMoment],
   );
   // Kept the same across refreshes, so the dock does not render again. The card usually is too.
   const target = useKept(locked ? plugin.target(locked) : null);
@@ -228,6 +260,7 @@ export function SkyScreen() {
   const openSource = useRef<(() => void) | null>(null);
   const onExplore = useCallback(
     (found: Target) => {
+      if (!hasDetails(found)) return;
       const href = detailsRoute(found, skyTime.current?.toISOString());
       // Mounts during the zoom, which is long enough for the link to be ready.
       if (APPLE_ZOOM) setSource({ href, centered: found.kind === 'constellation' });
@@ -273,7 +306,15 @@ export function SkyScreen() {
       )}
       <GestureDetector gesture={drag}>
         <View style={styles.fill}>
-          <SkyLayer marks={marks} lines={lines} turn={turn} pose={pose} view={view} zoom={zoom} />
+          <SkyLayer
+            marks={marks}
+            lines={lines}
+            turn={turn}
+            moving={moving}
+            pose={pose}
+            view={view}
+            zoom={zoom}
+          />
         </View>
       </GestureDetector>
 
@@ -375,7 +416,7 @@ export function SkyScreen() {
         )}
       </View>
       {leading && wantedMark && wantedUp && !zooming ? (
-        <FindArrow mark={wantedMark} turn={turn} pose={pose} view={view} />
+        <FindArrow mark={wantedMark} turn={moving} pose={pose} view={view} />
       ) : null}
     </View>
   );

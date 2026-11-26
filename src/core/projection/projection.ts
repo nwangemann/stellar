@@ -102,7 +102,12 @@ export function hitTest(
   let bestDistance = radius;
   for (const mark of marks) {
     const star = mark.kind === 'star';
-    const direction = star ? mark.direction : turn.bodies[mark.id];
+    const direction = star
+      ? mark.direction
+      : mark.kind === 'body'
+        ? turn.bodies[mark.id]
+        : turn.satellites[mark.id];
+    if (!direction) continue;
     const point = projectThrough(star ? stars : lens, direction);
     if (!point || (star ? dot(zenith, direction) : direction[2]) <= 0) continue;
     const d = Math.hypot(point.x - view.width / 2, point.y - view.height / 2);

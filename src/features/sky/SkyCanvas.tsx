@@ -1,7 +1,7 @@
 import { BlurMask, Canvas, DashPathEffect, Path, Skia } from '@shopify/react-native-skia';
 import { memo, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { useDerivedValue, type SharedValue } from 'react-native-reanimated';
+import { useDerivedValue, type DerivedValue, type SharedValue } from 'react-native-reanimated';
 import type { SkyMark, SkyTurn, StarMark } from '@/core/catalog/types';
 import type { Pose } from '@/core/pose/pose';
 import { projectThrough, starLens, type Lens, type Viewport } from '@/core/projection/projection';
@@ -9,11 +9,14 @@ import { zoomedLens, type ZoomAim } from '@/core/projection/zoom';
 import type { SkinId } from '@/ui/tokens/tokens';
 import { useTheme } from '@/ui/useTheme';
 import { BodyMarks } from './BodyMarks';
+import { SatelliteMarks } from './SatelliteMarks';
 
 export type SkyCanvasProps = {
   marks: readonly SkyMark[];
   lines: readonly (readonly [SkyMark, SkyMark])[];
-  turn: SharedValue<SkyTurn>;
+  turn: DerivedValue<SkyTurn>;
+  /** `turn` with satellites moving. Separate, so their motion does not redraw the stars. */
+  moving: DerivedValue<SkyTurn>;
   pose: SharedValue<Pose>;
   view: Viewport;
   zoom: { aim: SharedValue<ZoomAim | null>; amount: SharedValue<number> };
@@ -59,11 +62,15 @@ function starPath(
 /** A refresh only changes `turn`, so it must not render this again: rebuilding the worklets is slow. */
 export default memo(SkyCanvas);
 
-function SkyCanvas({ marks, lines, turn, pose, view, zoom }: SkyCanvasProps) {
+function SkyCanvas({ marks, lines, turn, moving, pose, view, zoom }: SkyCanvasProps) {
   const t = useTheme();
   const skin = t.skin;
   const points = useMemo(() => marks.filter((m) => m.kind === 'star'), [marks]);
   const bodies = useMemo(() => marks.flatMap((m) => (m.kind === 'body' ? [m.id] : [])), [marks]);
+  const satellites = useMemo(
+    () => marks.flatMap((m) => (m.kind === 'satellite' ? [m.id] : [])),
+    [marks],
+  );
   const segments = useMemo(
     () =>
       lines.flatMap(([a, b]) =>
@@ -109,6 +116,8 @@ function SkyCanvas({ marks, lines, turn, pose, view, zoom }: SkyCanvasProps) {
           strokeCap="round"
         />
         <BodyMarks bodies={bodies} turn={turn} lens={lens} zoom={zoom} />
+        <SatelliteMarks ids={satellites} moving={moving} lens={lens} />
+        <SatelliteMarks ids={satellites} moving={moving} lens={lens} />
       </Canvas>
     );
   if (skin === 'starship' || skin === 'glass')
@@ -124,6 +133,8 @@ function SkyCanvas({ marks, lines, turn, pose, view, zoom }: SkyCanvasProps) {
         </Path>
         <Path path={brightPath} color={t.color.star} />
         <BodyMarks bodies={bodies} turn={turn} lens={lens} zoom={zoom} />
+        <SatelliteMarks ids={satellites} moving={moving} lens={lens} />
+        <SatelliteMarks ids={satellites} moving={moving} lens={lens} />
       </Canvas>
     );
   return (
@@ -132,6 +143,7 @@ function SkyCanvas({ marks, lines, turn, pose, view, zoom }: SkyCanvasProps) {
       <Path path={faintPath} color={t.color.star} opacity={0.6} />
       <Path path={brightPath} color={t.color.star} />
       <BodyMarks bodies={bodies} turn={turn} lens={lens} zoom={zoom} />
+      <SatelliteMarks ids={satellites} moving={moving} lens={lens} />
     </Canvas>
   );
 }

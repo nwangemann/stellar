@@ -1,7 +1,7 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { FlatList, Pressable } from 'react-native';
-import { detailsRoute } from '@/features/sky/details';
+import { detailsRoute, hasDetails } from '@/features/sky/details';
 import { logbook } from '@/services/storage/logbook';
 import type { Capture } from '@/services/storage/logbook.types';
 import { GlassPanel } from '@/ui/components/GlassPanel';
@@ -57,7 +57,7 @@ export function LogbookScreen() {
             </Text>
           </GlassPanel>
         );
-        if (!target) return panel;
+        if (!target || !hasDetails(target)) return panel;
         return (
           <Pressable
             accessibilityRole="button"

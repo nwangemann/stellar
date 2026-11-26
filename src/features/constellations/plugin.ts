@@ -9,7 +9,7 @@ const SEGMENTS = CONSTELLATIONS.flatMap((c) => segments(c.lines));
 export const constellationsPlugin: LayerPlugin = {
   id: 'constellations',
   label: 'Constellations',
-  draw: (marks) => marks,
+  draw: (marks) => marks.filter((m) => m.kind !== 'satellite'),
   lines: (marks) => {
     const byId = new Map<string, SkyMark>(marks.map((o) => [o.id, o]));
     return SEGMENTS.flatMap(([a, b]) => {

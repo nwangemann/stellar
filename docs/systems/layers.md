@@ -1,5 +1,5 @@
 # Layers mode
 
-Layer plugin. Uses real stars. Will become a tray of toggleable layers; satellite passes are the planned first layer.
+Layer plugin, `src/features/layers/plugin.ts`. Draws stars and bright satellites, and selects only satellites, so a bright star cannot take the lock. Its first and only layer so far is [satellites](satellites.md); it will become a tray of toggleable layers. Stars and Constellations leave satellite marks out.
 
-Hidden from the mode strip since 2026-11-25, because it has no layers yet. `ALL_PLUGINS` in `src/features/sky/plugins.ts` still lists it, so it keeps passing the plugin contract test; `PLUGINS` is what the strip shows. A saved `layers` mode falls back to Stars. To bring it back, add `layersPlugin` to `PLUGINS`.
+A satellite's card shows its height, speed, whether it is sunlit and the orbit data's age, with a warning past the 7-day limit (`satelliteFacts` in `src/features/satellites/facts.ts`). While a satellite is locked the card refreshes every second. Satellites have no details screen yet, so their card has no details button and their logbook rows open nothing; backlog step 10.4 adds one.

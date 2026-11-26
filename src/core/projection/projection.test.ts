@@ -62,7 +62,9 @@ test('the marks land where the sky puts the objects', () => {
     const q =
       mark.kind === 'star'
         ? projectThrough(stars, mark.direction)
-        : projectThrough(lens, turn.bodies[mark.id]);
+        : mark.kind === 'body'
+          ? projectThrough(lens, turn.bodies[mark.id])
+          : null;
     // Placed the long way round: precession and sidereal time as angles.
     const s = starById(mark.id);
     const direct = s
