@@ -36,7 +36,7 @@ export PATH="$JAVA_HOME/bin:$PATH"
 - `npm run ios`: build and run on the simulator. Starts Metro unless port 8081 is already serving it.
 - `npm run web`: development preview.
 - `npm run check`: types, lint, formatting, tests and docs. Required before finishing.
-- `npm run test:e2e`: runs the Maestro flows in `.maestro/` on the simulator. Needs Metro on 8081 and the Java exports. With two simulators booted, add `-- --device <UDID>`.
+- `npm run test:e2e`: runs the Maestro flows in `.maestro/` on the simulator. Needs Metro on 8081 and the Java exports. With two simulators booted, add `-- --device <UDID>`. Flows: `launch.yaml` (reused by others through `runFlow`), `identify.yaml` (Polaris to the logbook).
 - `npx prettier --write <files>`: fixes formatting failures.
 - `npx expo-doctor`: needs Homebrew on the path.
 

@@ -1,0 +1,26 @@
+# The main path: turn the sky to Polaris, lock on, identify it and find it in the logbook.
+# Polaris is always up from the demo location (40° N), so the real time does not matter.
+appId: com.nate.stellar
+---
+- runFlow: launch.yaml
+- tapOn: 'Stars'
+- tapOn: 'Search'
+- tapOn: 'Star, planet, constellation or satellite'
+- inputText: 'Polaris'
+- tapOn: 'Find Polaris in the sky'
+# The sky turns to Polaris and locks on, which enables Identify.
+- extendedWaitUntil:
+    visible:
+      text: 'Identify'
+      enabled: true
+    timeout: 15000
+- tapOn: 'Identify'
+- extendedWaitUntil:
+    visible: 'Identified Polaris'
+    timeout: 10000
+- tapOn: 'Logbook'
+# An entry reads as one label: name, time, pose. Earlier runs leave entries too; the
+# message above proves this run saved one.
+- extendedWaitUntil:
+    visible: 'Polaris, .*'
+    timeout: 10000

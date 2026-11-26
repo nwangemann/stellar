@@ -2,7 +2,7 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step: 3.2**, the main flow in [simulator tests](simulator-tests.md). Task 8 waits for the owner's go-ahead.
+**Next step: 3.3**, coverage in [simulator tests](simulator-tests.md). Task 8 waits for the owner's go-ahead.
 
 Prioritized 2026-11-25 by immediate value: quick visible fixes first, then the feature that brings back the hidden Layers mode.
 
