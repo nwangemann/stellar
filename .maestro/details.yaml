@@ -1,0 +1,17 @@
+# Opens Polaris's details from search, checks its facts, and closes them.
+appId: com.nate.stellar
+---
+- runFlow: launch.yaml
+- tapOn: 'Search'
+- tapOn: 'Star, planet, constellation or satellite'
+- inputText: 'Polaris'
+- tapOn: 'Polaris, .*'
+- assertVisible: 'Star data'
+- assertVisible: 'Constellation: Ursa Minor'
+- assertVisible: 'Find Polaris in the sky'
+# Details open as a sheet: swipe it down to close.
+- swipe:
+    direction: DOWN
+- assertVisible: 'Star, planet, constellation or satellite'
+- tapOn: 'Back'
+- assertVisible: 'Identify'

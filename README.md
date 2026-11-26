@@ -65,7 +65,10 @@ npm install
 npm run ios        # development build on the iOS simulator
 npm run web        # browser preview (no camera or sensors)
 npm run check      # types, lint, formatting, 210 unit tests and doc checks
+npm run test:e2e   # Maestro flows on a booted simulator, with Metro running
 ```
+
+`npm run test:e2e` drives the development build on the iOS simulator: launch, Polaris to the logbook, every look, night vision and a details screen. It needs Java 17 and Maestro (ADR 19, setup in the `stellar-dev` skill) and is not run in CI.
 
 Android is configured but not yet built or tested.
 

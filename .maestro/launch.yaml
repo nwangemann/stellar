@@ -3,7 +3,9 @@
 appId: com.nate.stellar
 ---
 - stopApp
-- openLink: stellar://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+# The __expo_disable_* switches keep the dev menu and its floating button, which
+# sits over the Settings button, out of the way.
+- openLink: stellar://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081&__expo_disable_onboarding=1&__expo_disable_fab=1&__expo_disable_auto_launch=1
 # Dev-client launcher and first-run prompts, shown only sometimes.
 - tapOn:
     text: 'http://localhost:8081'

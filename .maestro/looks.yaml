@@ -1,0 +1,21 @@
+# Switches through each look in Settings and checks the sky screen keeps its
+# controls in each. Ends on Default, so later flows and runs start from it.
+appId: com.nate.stellar
+---
+- runFlow: launch.yaml
+- runFlow:
+    file: steps/look.yaml
+    env:
+      LOOK: 'Starship'
+- runFlow:
+    file: steps/look.yaml
+    env:
+      LOOK: 'Glass & chrome'
+- runFlow:
+    file: steps/look.yaml
+    env:
+      LOOK: 'Needlepoint'
+- runFlow:
+    file: steps/look.yaml
+    env:
+      LOOK: 'Default'

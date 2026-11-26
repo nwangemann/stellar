@@ -1,0 +1,20 @@
+# Turns night vision on, checks the sky screen still works in it, then turns it
+# off again so later flows and runs start without it.
+appId: com.nate.stellar
+---
+- runFlow: launch.yaml
+- tapOn: 'Settings'
+- tapOn: 'Night vision \(red\)'
+- assertVisible: 'Night vision is on, .*'
+- tapOn: 'Back'
+- assertVisible: 'Identify'
+- assertVisible: 'Layers'
+# The mode strip still switches.
+- tapOn: 'Constellations'
+- tapOn: 'Stars'
+- assertVisible: 'Identify'
+- tapOn: 'Settings'
+- tapOn: 'Night vision \(red\)'
+- assertNotVisible: 'Night vision is on, .*'
+- tapOn: 'Back'
+- assertVisible: 'Identify'

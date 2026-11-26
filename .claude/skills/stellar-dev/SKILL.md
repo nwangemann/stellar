@@ -36,7 +36,7 @@ export PATH="$JAVA_HOME/bin:$PATH"
 - `npm run ios`: build and run on the simulator. Starts Metro unless port 8081 is already serving it.
 - `npm run web`: development preview.
 - `npm run check`: types, lint, formatting, tests and docs. Required before finishing.
-- `npm run test:e2e`: runs the Maestro flows in `.maestro/` on the simulator. Needs Metro on 8081 and the Java exports. With two simulators booted, add `-- --device <UDID>`. Flows: `launch.yaml` (reused by others through `runFlow`), `identify.yaml` (Polaris to the logbook).
+- `npm run test:e2e`: runs the Maestro flows in `.maestro/` on the simulator. Needs Metro on 8081 and the Java exports. With two simulators booted, add `-- --device <UDID>`. Takes about 2.5 minutes. Flows: `launch.yaml` (reused by the others through `runFlow`), `identify.yaml` (Polaris to the logbook), `looks.yaml` (each look, ending on Default), `night-vision.yaml` (on and off again), `details.yaml` (Polaris's details from search). `steps/` holds subflows, which do not run on their own. Flows that change settings restore them, since settings persist between runs. The launch link's `__expo_disable_*` switches keep the dev menu and its floating button, which covers the Settings button, out of the way.
 - `npx prettier --write <files>`: fixes formatting failures.
 - `npx expo-doctor`: needs Homebrew on the path.
 

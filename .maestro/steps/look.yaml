@@ -1,0 +1,11 @@
+# Picks the look named in LOOK from the sky screen, goes back and checks the
+# controls. Used by looks.yaml; not a flow of its own.
+appId: com.nate.stellar
+---
+- tapOn: 'Settings'
+- tapOn: '${LOOK}\. .*'
+- tapOn: 'Back'
+- assertVisible: 'Identify'
+- assertVisible: 'Stars'
+- assertVisible: 'Constellations'
+- assertVisible: 'Layers'
