@@ -73,7 +73,6 @@ export function ConstellationScreen() {
 
       {tab === 'Overview' ? (
         <GlassPanel>
-          <Text size="title">{c.name}</Text>
           <FactRow label="Meaning" value={c.english} />
           {c.id === 'Ple' ? null : <FactRow label="Abbreviation" value={c.id} />}
           <FactRow label="Brightest line star" value={stars[0]?.name ?? ''} />

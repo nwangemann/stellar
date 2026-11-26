@@ -18,6 +18,7 @@
 - Time travel: a slider moves the sky from 12 hours back to 24 hours ahead.
 - Search for stars, constellations, planets, the Sun and the Moon by name.
 - Find in sky turns the view to an object from search or its details, or leads there with an arrow when the sky follows the phone.
+- Review fixes: the constellation name shows once, iPad runs the iPhone layout in portrait, and a smaller app icon.
 - The star screen links to its constellation, and logbook rows open details.
 - Details zoom out of their object in the sky, and back into it when closed.
 - Fixed: Triangulum Australe is matched to its stars.

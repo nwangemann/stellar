@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "infoPlist": {
         "NSCameraUsageDescription": "Stellar shows the sky overlay on top of your camera view.",
         "UIViewControllerBasedStatusBarAppearance": false

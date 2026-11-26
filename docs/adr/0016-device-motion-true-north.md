@@ -18,4 +18,5 @@ No reading is sent until the declination is known, and none without location per
 - No new prompt: raw motion needs no permission, so DeviceMotion's permission request is not called. iOS still needs its usage text. Android's activity recognition permission is blocked.
 - The frame conversions come from reading the package source, SDK 58. Recheck them when upgrading.
 - The pose assumes portrait. iPhones are locked to it, but iPads and large Android screens can rotate, and would show the sky turned.
+- So `ios.supportsTablet` is false in `app.json`: iPads run the iPhone layout, locked to portrait.
 - DeviceMotion gives Euler angles, which are ambiguous with the phone upright. Alpha and gamma come from the same sample, so they recombine correctly, but this needs a check on a phone.

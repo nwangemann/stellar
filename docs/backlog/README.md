@@ -2,7 +2,9 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step: none ready. Task 3 needs the owner's OK, and task 8 comes last.**
+**Next step: 10.1, orbits in the core.**
+
+Prioritized 2026-11-25 by immediate value: quick visible fixes first, then the feature that brings back the hidden Layers mode.
 
 ## Queue
 
@@ -10,15 +12,18 @@ Sizes are rough estimates in steps. A step should fit in one session.
 
 | #   | Task                                  | Steps | Status     | Needs first                        |
 | --- | ------------------------------------- | ----- | ---------- | ---------------------------------- |
+| 10  | [Satellite passes](satellites.md)     | 4     | Ready      | Nothing                            |
 | 3   | [Simulator tests](simulator-tests.md) | 3     | Needs user | OK to install Java and Maestro     |
 | 8   | [On a real device](device.md)         | 8     | Last       | Feature work done, user's go-ahead |
 
 ## Later, not yet prioritized
 
-- Photo capture, the unbuilt part of phase 3.
+In rough order of value:
+
+- Simplify, to be decided by the owner: freeze or cut Glass and Needlepoint; go iOS-only. Cuts the cost of every later feature.
+- Set the GitHub description and topics. The owner's call, since it is public.
+- Photo capture, the unbuilt part of phase 3. The simulator has no camera, so most of it can only be proven in task 8.
 - Ask about this star: Claude answers from bundled data. Needs a small backend to hold the API key.
-- Satellite passes as the first real layer, then show Layers again. Planned next.
-- Simplify, to be decided: freeze or cut Glass and Needlepoint; go iOS-only.
 
 ## Rules
 

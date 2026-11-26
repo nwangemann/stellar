@@ -35,7 +35,7 @@ Not verified: camera image, haptics, permission prompts, location, sensors, rele
 - Stars, constellations and stories are bundled snapshots (ADR 13). The marks for the Sun, Moon and planets are much larger than life.
 - Stories cover 10 figures and papers cover 27 stars. arXiv and NASA Exoplanet Archive reuse terms are unchecked. Stories need community review before release.
 - Capture saves a data card with no photo. On web the logbook clears on reload.
-- Sensor pose assumes portrait; iPads can rotate (ADR 16). Compass alignment lasts only until the app restarts. The field of view over the camera is estimated, not measured.
+- Sensor pose assumes portrait, so iPad runs the iPhone layout (ADR 16). Compass alignment lasts only until the app restarts. The field of view over the camera is estimated, not measured.
 - npm audit reports moderate advisories, mostly `minimatch` in development tooling. Do not use `npm audit fix --force`: it proposed downgrading Expo.
 - Stellar is MIT licensed (ADR 10). The copyright line says "Stellar contributors".
 
