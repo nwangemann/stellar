@@ -12,6 +12,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 import { MARKS } from '@/core/catalog/sky';
+import { nextPass } from '@/core/satellites/pass';
 import { satelliteMarks } from '@/core/satellites/sky';
 import type { Target } from '@/core/layers/types';
 import { dragAlignment } from '@/core/pose/alignment';
@@ -20,6 +21,7 @@ import { coverFieldOfView, OPEN_SKY_FOV } from '@/core/projection/fieldOfView';
 import type { Viewport } from '@/core/projection/projection';
 import { deg, px } from '@/core/units';
 import { FindArrow, FindPanel } from '@/features/find/FindArrow';
+import { passSummary } from '@/features/satellites/facts';
 import { useFocusLock } from '@/features/focus/useFocusLock';
 import { capture } from '@/features/logbook/capture';
 import {
@@ -171,6 +173,15 @@ export function SkyScreen() {
     [allMarks, wantedId],
   );
   const wantedUp = sky.some((o) => o.id === wantedId && o.position.alt > 0);
+  // A satellite that has set: say when it is next visible instead of pointing at the ground.
+  const setSatellite =
+    leading?.target.kind === 'satellite' && !wantedUp
+      ? satellites.find((s) => s.id === leading.target.id)
+      : undefined;
+  const passNote = useMemo(
+    () => (setSatellite ? passSummary(nextPass(setSatellite, moment), moment) : undefined),
+    [setSatellite, moment],
+  );
   const onCancelFind = useCallback(() => setFind({ wanted: null }), [setFind]);
   // The request lasts as long as its lock, because only it makes a faint star a target.
   useEffect(() => {
@@ -372,7 +383,12 @@ export function SkyScreen() {
         ]}
       >
         {leading ? (
-          <FindPanel name={leading.target.name} up={wantedUp} onCancel={onCancelFind} />
+          <FindPanel
+            name={leading.target.name}
+            up={wantedUp}
+            below={passNote}
+            onCancel={onCancelFind}
+          />
         ) : null}
         {timeOpen ? (
           <TimePanel

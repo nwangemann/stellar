@@ -44,11 +44,11 @@ export const TopBar = memo(function TopBar(props: TopBarProps) {
   );
 });
 
-/** Satellites have no details screen yet (backlog step 10.4). */
-const DETAILS_LABEL: Partial<Record<Target['kind'], string>> = {
+const DETAILS_LABEL: Record<Target['kind'], string> = {
   star: 'Star details',
   body: 'Details',
   constellation: 'Explore constellation',
+  satellite: 'Next pass and details',
 };
 
 type TargetSheetProps = { card: InfoCard; target: Target; onExplore: (target: Target) => void };

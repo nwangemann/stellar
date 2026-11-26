@@ -1,10 +1,12 @@
 import { BODY_IDS } from '../astro/bodies';
+import { SATELLITE_ALIASES } from '../satellites/names';
+import type { Satellite } from '../satellites/orbit';
 import { CONSTELLATIONS, starById } from './catalog';
 import { GENITIVES } from './genitives';
 import { BODY_NAMES, MARKS } from './sky';
 
 export interface SearchResult {
-  readonly kind: 'star' | 'constellation' | 'body';
+  readonly kind: 'star' | 'constellation' | 'body' | 'satellite';
   readonly id: string;
   readonly name: string;
   /** A second name, such as a star's designation. Null if it would repeat the name. */
@@ -72,13 +74,29 @@ function rank(keys: readonly string[], query: string): number | null {
 
 let index: Entry[] | undefined;
 
-/** Finds drawn objects by name, best match first. */
-export function search(query: string, limit = 30): SearchResult[] {
+/** Satellites change with fetched orbits, so they are indexed on each search. */
+const satelliteEntries = (satellites: readonly Satellite[]): Entry[] =>
+  satellites.map(({ id, name }): Entry => {
+    const aliases = SATELLITE_ALIASES[id] ?? [];
+    return {
+      result: { kind: 'satellite', id, name, detail: aliases[0] ?? null },
+      keys: [normalize(name), ...aliases.map(normalize)],
+    };
+  });
+
+/** Finds drawn objects by name, best match first. Satellites come after bodies. */
+export function search(
+  query: string,
+  limit = 30,
+  satellites: readonly Satellite[] = [],
+): SearchResult[] {
   const wanted = normalize(query);
   if (!wanted) return [];
   index ??= buildIndex();
+  const bodies = index.filter((e) => e.result.kind === 'body');
+  const rest = index.slice(bodies.length);
   const ranked: SearchResult[][] = [[], [], []];
-  for (const { result, keys } of index) {
+  for (const { result, keys } of [...bodies, ...satelliteEntries(satellites), ...rest]) {
     const r = rank(keys, wanted);
     if (r !== null) ranked[r]!.push(result);
   }

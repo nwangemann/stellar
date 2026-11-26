@@ -8,6 +8,7 @@ import { FindButton } from '@/features/find/FindButton';
 import { detailsRoute } from '@/features/sky/details';
 import { timeLabel } from '@/features/sky/timeLabel';
 import { useMoment } from '@/features/sky/useMoment';
+import { useOrbits } from '@/state/orbits';
 import { GlassPanel } from '@/ui/components/GlassPanel';
 import { Text } from '@/ui/components/Text';
 import { useTheme } from '@/ui/useTheme';
@@ -16,6 +17,7 @@ const KINDS: Record<SearchResult['kind'], string> = {
   star: 'Star',
   body: 'Solar system',
   constellation: 'Constellation',
+  satellite: 'Satellite',
 };
 
 export function SearchScreen() {
@@ -24,8 +26,12 @@ export function SearchScreen() {
   const { at } = useLocalSearchParams<{ at?: string }>();
   const { moment: now, demo } = useMoment();
   const [query, setQuery] = useState('');
-  const results = useMemo(() => search(query), [query]);
-  const sky = useMemo(() => createSky(now.observer, at ? new Date(at) : now.date), [now, at]);
+  const satellites = useOrbits((s) => s.satellites);
+  const results = useMemo(() => search(query, 30, satellites), [query, satellites]);
+  const sky = useMemo(
+    () => createSky(now.observer, at ? new Date(at) : now.date, satellites),
+    [now, at, satellites],
+  );
   const notes = [
     ...(at ? [`Sky shown for ${timeLabel(new Date(at))}.`] : []),
     ...(demo ? ['For the demo location.'] : []),
@@ -46,7 +52,7 @@ export function SearchScreen() {
             autoCapitalize="none"
             autoCorrect={false}
             keyboardAppearance={t.statusBar === 'dark' ? 'light' : 'dark'}
-            placeholder="Star, planet or constellation"
+            placeholder="Star, planet, constellation or satellite"
             placeholderTextColor={t.color.textMuted}
             returnKeyType="search"
             selectionColor={t.color.accent}

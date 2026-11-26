@@ -2,7 +2,7 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step: 10.4, next pass, search and find in sky for satellites.**
+**Next step: none ready.** Task 3 needs the owner's OK to install Java and Maestro; task 8 waits for the owner's go-ahead. Otherwise pick from **Later**.
 
 Prioritized 2026-11-25 by immediate value: quick visible fixes first, then the feature that brings back the hidden Layers mode.
 
@@ -12,7 +12,6 @@ Sizes are rough estimates in steps. A step should fit in one session.
 
 | #   | Task                                  | Steps | Status     | Needs first                        |
 | --- | ------------------------------------- | ----- | ---------- | ---------------------------------- |
-| 10  | [Satellite passes](satellites.md)     | 4     | Ready      | Nothing                            |
 | 3   | [Simulator tests](simulator-tests.md) | 3     | Needs user | OK to install Java and Maestro     |
 | 8   | [On a real device](device.md)         | 8     | Last       | Feature work done, user's go-ahead |
 

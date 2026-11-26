@@ -16,6 +16,8 @@ const OUT_MS = 500;
 
 function aimFor({ kind, id }: Target, view: Viewport): ZoomAim | null {
   if (kind === 'body') return bodyZoom(id as BodyId);
+  // A satellite moves too fast to zoom on, so its details open straight away.
+  if (kind === 'satellite') return null;
   const star = kind === 'star' ? starById(id) : undefined;
   const stars = star ? [star] : starsIn(constellationById(id)?.lines ?? []);
   return stars.length

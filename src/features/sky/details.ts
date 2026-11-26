@@ -4,11 +4,12 @@ const DETAILS = {
   star: '/star/[id]',
   body: '/body/[id]',
   constellation: '/constellation/[id]',
+  satellite: '/satellite/[id]',
 } as const;
 
 type Details = Pick<Target, 'kind' | 'id'> & { kind: keyof typeof DETAILS };
 
-/** Whether the target has a details screen. Satellites get theirs in backlog step 10.4. */
+/** Whether the target has a details screen. */
 export const hasDetails = (t: Pick<Target, 'kind' | 'id'>): t is Details => t.kind in DETAILS;
 
 /** The route to an object's details. `at` is the time the sky shows, if not the present. */

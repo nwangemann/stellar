@@ -45,6 +45,10 @@ export default function RootLayout() {
         <Stack.Screen name="star/[id]" options={{ presentation: 'modal', title: 'Star' }} />
         <Stack.Screen name="body/[id]" options={{ presentation: 'modal', title: 'Details' }} />
         <Stack.Screen
+          name="satellite/[id]"
+          options={{ presentation: 'modal', title: 'Satellite' }}
+        />
+        <Stack.Screen
           name="constellation/[id]"
           options={{ presentation: 'modal', title: 'Constellation' }}
         />

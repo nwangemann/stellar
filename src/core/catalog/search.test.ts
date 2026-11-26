@@ -1,5 +1,6 @@
 import { STARS } from './catalog';
 import { GENITIVES } from './genitives';
+import { BUNDLED_SATELLITES } from '../satellites/bundled';
 import { search } from './search';
 
 const first = (query: string) => search(query)[0]?.name;
@@ -38,4 +39,11 @@ test('every constellation that stars name has a genitive', () => {
   const ids = STARS.flatMap((s) => s.constellation ?? []);
   expect(ids.filter((id) => !GENITIVES[id])).toEqual([]);
   expect(Object.keys(GENITIVES)).toHaveLength(88);
+});
+
+test('satellites are found by name and by better known names', () => {
+  const find = (q: string) => search(q, 30, BUNDLED_SATELLITES)[0];
+  expect(find('ISS')).toMatchObject({ kind: 'satellite', id: '25544' });
+  expect(find('tiangong')).toMatchObject({ kind: 'satellite', name: 'CSS (TIANHE)' });
+  expect(find('hubble')?.id).toBe('20580');
 });

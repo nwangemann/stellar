@@ -69,15 +69,18 @@ export const FindArrow = memo(function FindArrow({ mark, turn, pose, view }: Arr
   );
 });
 
-type PanelProps = { name: string; up: boolean; onCancel: () => void };
+/** `below` adds to "is below the horizon", for example a satellite's next pass. */
+type PanelProps = { name: string; up: boolean; below?: string; onCancel: () => void };
 
-export const FindPanel = memo(function FindPanel({ name, up, onCancel }: PanelProps) {
+export const FindPanel = memo(function FindPanel({ name, up, below, onCancel }: PanelProps) {
   const t = useTheme();
   return (
     <GlassPanel style={{ padding: t.space.sm }}>
       <View style={[styles.row, { gap: t.space.md }]}>
-        <Text accessibilityLiveRegion="polite" numberOfLines={2} style={styles.label}>
-          {up ? `Follow the arrow to ${name}` : `${name} is below the horizon`}
+        <Text accessibilityLiveRegion="polite" numberOfLines={3} style={styles.label}>
+          {up
+            ? `Follow the arrow to ${name}`
+            : `${name} is below the horizon${below ? `. ${below}` : ''}`}
         </Text>
         <Button
           variant="quiet"

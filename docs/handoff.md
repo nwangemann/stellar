@@ -1,6 +1,6 @@
 # Handoff
 
-Snapshot: 2026-11-25. Check the install state again before relying on it.
+Snapshot: 2026-11-26. Check the install state again before relying on it.
 
 Tasks are in the [backlog](backlog/README.md); setup is in the `stellar-dev` skill. The latest review is [reviews/2026-11-25.md](reviews/2026-11-25.md).
 
@@ -10,25 +10,25 @@ Device checks, tuning and calibration are deferred to the end of development, in
 
 ## Status
 
-| Area                                                 | Status                                                      |
-| ---------------------------------------------------- | ----------------------------------------------------------- |
-| App shell, design system, looks, night vision        | Built; checked on the iOS simulator                         |
-| Real sky: stars, constellations, Sun, Moon, planets  | Built; positions tested against JPL Horizons                |
-| Details, mythology, search, find in sky, time travel | Built; checked on the iOS simulator, except the body screen |
-| Logbook                                              | Built as data cards; photo capture not started              |
-| Sensors, compass alignment, camera field of view     | Built; untried on a phone                                   |
-| Layers mode                                          | Bright satellites, moving, with a card; next pass in 10.4   |
-| Physical iPhone, release build, Android              | Not started (backlog task 8)                                |
+| Area                                                 | Status                                                        |
+| ---------------------------------------------------- | ------------------------------------------------------------- |
+| App shell, design system, looks, night vision        | Built; checked on the iOS simulator                           |
+| Real sky: stars, constellations, Sun, Moon, planets  | Built; positions tested against JPL Horizons                  |
+| Details, mythology, search, find in sky, time travel | Built; checked on the iOS simulator, except the body screen   |
+| Logbook                                              | Built as data cards; photo capture not started                |
+| Sensors, compass alignment, camera field of view     | Built; untried on a phone                                     |
+| Layers mode                                          | Bright satellites with card, details, next pass, search, find |
+| Physical iPhone, release build, Android              | Not started (backlog task 8)                                  |
 
 ## What has been verified
 
-- `npm run check` passes, with 205 tests in 24 suites. GitHub Actions runs it on pull requests and `main`; it does not build the app.
+- `npm run check` passes, with 209 tests in 25 suites. GitHub Actions runs it on pull requests and `main`; it does not build the app.
 - Both Husky hooks ran: a bad commit message was rejected and valid commits passed the full checks.
 - The iOS debug build compiles. Expo Doctor passes 20/20 with Homebrew on the path.
-- On the iPhone 17 Pro simulator (iOS 26.5): the sky, drag, lock-on, capture to SQLite, logbook, mode swipe, saved settings, night vision, every look, the star and constellation screens, and the Sun, Moon and planet marks with a faked date. On 2026-11-25 also: search, find in sky while dragging, the mythology tab, time travel and the settings switches.
+- On the iPhone 17 Pro simulator (iOS 26.5): the sky, drag, lock-on, capture to SQLite, logbook, mode swipe, saved settings, night vision, every look, the star and constellation screens, and the Sun, Moon and planet marks with a faked date. On 2026-11-25 also: search, find in sky while dragging, the mythology tab, time travel and the settings switches. On 2026-11-26, in the Default look: Layers with the ISS, search for ISS, its details with a next pass, the card's details button, find in sky while dragging, and satellites moving with time travel.
 - In the web preview, at an earlier stage: onboarding, drag-to-look, lock-on, capture and night vision.
 
-Not verified: camera image, haptics, permission prompts, location, sensors, release builds, Reduce Motion and Reduce Transparency, frame rate and battery, anything on a physical phone or Android.
+Not verified: satellite passes against the real sky, the find arrow for a satellite (it needs sensors), camera image, haptics, permission prompts, location, sensors, release builds, Reduce Motion and Reduce Transparency, frame rate and battery, anything on a physical phone or Android.
 
 ## Known limits
 

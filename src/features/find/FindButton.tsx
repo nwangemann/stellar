@@ -7,6 +7,7 @@ import type { SkyObject } from '@/core/catalog/types';
 import type { Target } from '@/core/layers/types';
 import { useMoment } from '@/features/sky/useMoment';
 import { useFind } from '@/state/find';
+import { useOrbits } from '@/state/orbits';
 import { Button } from '@/ui/components/Button';
 import { Text } from '@/ui/components/Text';
 import { useTheme } from '@/ui/useTheme';
@@ -40,21 +41,26 @@ export function FindButton({ target, aim }: { target: Found; aim: SkyObject | nu
   );
 }
 
-/** For a details screen. `at` is the time the sky shows, if not the present. */
-export function FindInSky({ target, at }: { target: Found; at?: string }) {
+/**
+ * For a details screen. `at` is the time the sky shows, if not the present. `below` replaces
+ * "Below the horizon", for example with a satellite's next pass.
+ */
+export function FindInSky({ target, at, below }: { target: Found; at?: string; below?: string }) {
   const t = useTheme();
   const { moment } = useMoment();
   const { kind, id } = target;
-  const aim = useMemo(
-    () => aimAt({ kind, id }, createSky(moment.observer, at ? new Date(at) : moment.date)),
-    [kind, id, moment, at],
-  );
+  const satellites = useOrbits((s) => s.satellites);
+  const aim = useMemo(() => {
+    const date = at ? new Date(at) : moment.date;
+    const sats = kind === 'satellite' ? satellites.filter((s) => s.id === id) : [];
+    return aimAt({ kind, id }, createSky(moment.observer, date, sats));
+  }, [kind, id, moment, at, satellites]);
   return (
     <View style={{ gap: t.space.sm }}>
       <FindButton target={target} aim={aim} />
       {aim ? null : (
         <Text size="caption" muted style={{ textAlign: 'center' }}>
-          Below the horizon
+          {below ?? 'Below the horizon'}
         </Text>
       )}
     </View>

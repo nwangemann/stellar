@@ -10,6 +10,10 @@
 
 Fresh orbits live outside the core. `src/services/satellites/orbits.ts` has `loadOrbits`: the cache if fetched under six hours ago, else a fetch from CelesTrak's visual group, else the cache, else the bundle. It keeps only the bundled satellites, in the bundle's order. `src/services/storage/orbitCache.ts` keeps the fetched text and its fetch time in MMKV. `src/state/orbits.ts` exposes `useOrbits`: the `satellites`, their `source` (`fetched`, `cached` or `bundled`) and `fetchedAt`. It starts on the bundle, and the root layout calls `refresh` once at launch.
 
+## Next pass
+
+`src/core/satellites/pass.ts` has `nextPass`: for a satellite and a `Moment`, the next stretch in which it is visible, with its start, highest point and end, each a time and an `AltAz`; or null if there is none in `PASS_SEARCH_HOURS` (36). Visible means above 10° (`MIN_PASS_ALT`), sunlit, and the Sun below -6° (`DARK_SUN_ALT`). It steps 30 s at a time, so a shorter stretch can be missed, then bisects the edges to a second and finds the peak by ternary search. A pass under way is returned with its start in the past. `compassPoint` names one of eight directions. A pass costs a few thousand SGP4 and Sun positions, tens of milliseconds, so screens compute it only when shown. `passFacts` and `passSummary` in `src/features/satellites/facts.ts` word it.
+
 ## On the sky
 
 A satellite is a `SkyObject` of kind `satellite`, its id the NORAD number; it carries its `Satellite`, so cards can propagate it. It has no catalogued magnitude, so `magnitude` is Infinity. `src/core/satellites/sky.ts` gives `satelliteObjects` for `createSky`, `satelliteMarks` for drawing and `satelliteDirections` for the frequent refreshes. `SkyTurn.satellites` holds their horizon directions.
