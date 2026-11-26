@@ -31,6 +31,7 @@
     "react-native-vision-camera": "^5.2.4",
     "react-native-web": "^0.21.4",
     "react-native-worklets": "0.13.0",
+    "satellite.js": "^7.2.0",
     "zustand": "^5.1.0"
   },
   "devDependencies": {
@@ -67,8 +68,14 @@
   "jest": {
     "preset": "jest-expo",
     "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "^satellite\\.js$": "<rootDir>/node_modules/satellite.js/dist/index.js"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@expo-google-fonts|react-navigation|@react-navigation|@sentry/react-native|native-base|standard-navigation|satellite\\.js))",
+      "/node_modules/react-native-reanimated/plugin/",
+      "/node_modules/@react-native/babel-preset/"
+    ]
   },
   "license": "MIT"
 }

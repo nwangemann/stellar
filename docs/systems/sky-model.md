@@ -9,3 +9,5 @@ A refresh must be cheap, so the UI thread never gets a whole sky. `MARKS` is wha
 `src/core/astro/bodies.ts` gives the topocentric place of the Sun, Moon and naked-eye planets through `astronomy-engine` (ADR 15). These are coordinates of date, so pass them to `toAltAz` without `precess`. Tests check them against JPL Horizons values in `src/core/astro/fixtures`.
 
 `src/core/catalog/search.ts` finds bodies, constellations and drawn stars by name. Case, accents and superscripts do not matter, and "α CMa", "alpha cma" and "Alpha Canis Majoris" are the same; `genitives.ts` holds the Latin forms. Whole-name matches come first, then names that start with the text, then later words. Ties go to bodies, constellations, then brighter stars. The index is built on the first search. `aimAt` in `aim.ts` gives the object to point at to find one; see [Find in sky](find.md).
+
+Satellites are not catalog objects yet. Their positions come from `src/core/satellites`; see [satellites](satellites.md).

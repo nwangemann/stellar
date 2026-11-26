@@ -33,6 +33,7 @@ npm is recorded in ADR 0008. `npm run docs:check` fails if this table and packag
 | `react-native-vision-camera`     | Camera                             | MIT     | 0003 |
 | `react-native-web`               | Web preview                        | MIT     | 0009 |
 | `react-native-worklets`          | Reanimated requirement             | MIT     | 0004 |
+| `satellite.js`                   | Satellite orbits (SGP4)            | MIT     | 0018 |
 | `zustand`                        | App state                          | MIT     | 0001 |
 
 ## devDependencies
