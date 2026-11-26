@@ -64,7 +64,7 @@ Needs Node 22.13+, 24.3+ or 26+ and, for native builds, Xcode with an iOS simula
 npm install
 npm run ios        # development build on the iOS simulator
 npm run web        # browser preview (no camera or sensors)
-npm run check      # types, lint, formatting, 209 unit tests and doc checks
+npm run check      # types, lint, formatting, 210 unit tests and doc checks
 ```
 
 Android is configured but not yet built or tested.
