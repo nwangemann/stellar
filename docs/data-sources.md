@@ -1,6 +1,6 @@
 # Data sources
 
-Everything is bundled in `src/data`. The app makes no network requests for sky data yet; links open in the browser. Fetched 2026-11-24 unless noted. Satellite orbits will be fetched at launch from step 10.2 (ADR 18); the bundled set is the offline fallback.
+Everything is bundled in `src/data`. The only network request for sky data is the satellite orbits, fetched from CelesTrak at launch at most every six hours (ADR 18); the bundled set is the offline fallback. Links open in the browser. Fetched 2026-11-24 unless noted.
 
 | Data                                            | File                                  | Origin and version                                                                       | Licence                                 |
 | ----------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------- |

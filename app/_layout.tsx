@@ -1,13 +1,19 @@
 import { router, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useOrbits } from '@/state/orbits';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { Backdrop } from '@/ui/skins/Backdrop';
 import { useTheme } from '@/ui/useTheme';
 
 export default function RootLayout() {
   const t = useTheme();
+  const refreshOrbits = useOrbits((s) => s.refresh);
+  useEffect(() => {
+    void refreshOrbits();
+  }, [refreshOrbits]);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style={t.statusBar} hidden={t.name === 'night'} />
