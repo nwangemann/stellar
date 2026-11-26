@@ -11,6 +11,7 @@ Proof: the owner's observations, recorded in the handoff.
 - [ ] **8.3 Sensors.** Direction against a known object, phone upright (ADR 16) and at the zenith, shake, lag, pausing and returning. The find-in-sky arrow (5.4). Tune `TIME_CONSTANT` in `useSensorPose.ts`.
 - [ ] **8.4 Calibration.** The accuracy notice and its limit, alignment on a known object, and the field of view against the camera picture, including which lens is used. Read: `fieldOfView.ts`, `AlignPanel.tsx`.
 - [ ] **8.5 Sun warning.** With sensor accuracy known, revisit warning in every direction while the camera is on.
+- [ ] **8.5b Satellites.** Watch one predicted ISS pass against the real sky: start time, path and highest point. The find-in-sky arrow for a satellite. The live CelesTrak fetch on mobile data and offline (falls back to the cache).
 - [ ] **8.6 Looks and cost.** Looks over the live camera, the camera fade when details open and close, the details zoom while following the phone, Reduce Motion and Reduce Transparency, frame rate, battery.
 - [ ] **8.7 Release build.** Repeat the basics with `npx expo run:ios --device --configuration Release`, which runs away from the Mac.
 - [ ] **8.8 Android.** When Android testing starts (ADR 11): build, camera, sensors, looks.
