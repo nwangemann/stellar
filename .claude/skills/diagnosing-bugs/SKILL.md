@@ -12,7 +12,7 @@ Adapted from [mattpocock/skills](https://github.com/mattpocock/skills) at `d6539
 - For hard bugs only. If the cause is plain from a quick look, fix it directly.
 - Load `stellar-dev` before running anything. Prefer a Jest test in `src/core` as the loop; use the simulator only when the bug needs it, and then a slower loop is fine.
 - Write at most one small regression test, and only if the mistake is likely and hard to see. Otherwise skip it and say so.
-- Finish with `npm run check`. Put follow-up ideas in `docs/backlog`.
+- Finish with `npm run check`. Put follow-up ideas in `dev/backlog`.
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
 

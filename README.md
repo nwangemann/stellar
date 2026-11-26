@@ -74,7 +74,14 @@ Android is configured but not yet built or tested.
 
 ## Status
 
-The sky, satellites, details, search, find in sky, time travel, looks and logbook are built and checked in tests and on the iOS simulator. The camera, sensors, compass alignment, haptics and permission prompts need a physical iPhone and have not yet been tried on one, and satellite passes have not been checked against the real sky; those checks are the last task in the [backlog](docs/backlog/README.md). Photo capture is not built. Current state is in the [handoff](docs/handoff.md); the latest review is [docs/reviews/2026-11-26.md](docs/reviews/2026-11-26.md). Phase 1 is complete and tagged `v0.1.0`.
+The sky, satellites, details, search, find in sky, time travel, looks and logbook are built and checked in tests and on the iOS simulator. The camera, sensors, compass alignment, haptics and permission prompts need a physical iPhone and have not yet been tried on one, and satellite passes have not been checked against the real sky. Photo capture is not built. Phase 1 is complete and tagged `v0.1.0`.
+
+Known limits:
+
+- Stars, constellations and stories are bundled snapshots (ADR 13). The marks for the Sun, Moon and planets are much larger than life.
+- Stories cover 10 figures and papers cover 27 stars. The reuse terms of arXiv and the NASA Exoplanet Archive are unchecked, and the stories need community review before a store release.
+- Capture saves a data card with no photo. On the web the logbook clears on reload.
+- Sensor pose assumes portrait, so iPad runs the iPhone layout (ADR 16). Compass alignment lasts only until the app restarts. The field of view over the camera is estimated, not measured.
 
 ## Built with an AI agent
 
@@ -83,7 +90,6 @@ Stellar was written largely by an AI coding agent (Claude Code), steered by a pe
 ## Docs
 
 - [Architecture](docs/architecture.md), [systems](docs/systems/) and [decisions](docs/adr/)
-- [Backlog](docs/backlog/README.md) and [handoff](docs/handoff.md)
 - [Data sources](docs/data-sources.md) and [dependencies](docs/dependencies.md)
 - [Standards](docs/standards.md) and [changelog](CHANGELOG.md)
 

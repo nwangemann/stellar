@@ -27,4 +27,4 @@ Settings has a look picker. `src/ui/skins` holds the art; see ADR 14. `useTheme`
 
 `BodyMarks` draws the Sun (rays), the Moon (phase, with its bright limb towards the Sun), planets (ringed dot) and Saturn (tilted ring). Shapes differ, not just colors, so they survive night vision. Sizes are fixed and larger than life. Colors are the `sun`, `moon`, `moonDark` and `planet` tokens.
 
-`SunWarning` uses the real Sun, not the time shown. It shows while the Sun is up and either the view is within 40° of it or the camera is on. The camera case ignores direction because sensor accuracy is unproven and dragging is not aiming; revisit it after the phone test (backlog step 8.5).
+`SunWarning` uses the real Sun, not the time shown. It shows while the Sun is up and either the view is within 40° of it or the camera is on. The camera case ignores direction because sensor accuracy is unproven and dragging is not aiming; revisit it after testing on a phone.

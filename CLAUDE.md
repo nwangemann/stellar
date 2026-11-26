@@ -11,9 +11,9 @@
 
 ## Session routine
 
-1. Read `docs/backlog/README.md`, then only the file for the task at hand. Read `docs/handoff.md` only when you need project state.
+1. Read `dev/backlog/README.md`, then only the file for the task at hand. Read `dev/handoff.md` only when you need project state. `dev/` holds process notes (backlog, handoff, reviews); it is git-ignored, and committed files never link to it.
 2. Load the `stellar-dev` skill before running anything.
 3. Do one step (one checkbox). Open only the files that step lists.
 4. Run `npm run check`, tick the step, update "Next step" in the backlog index, and stop. Start the next step in a new session.
 
-New ideas go in the backlog, not in the current step.
+New ideas go in the backlog, not in the current step. Project docs (architecture, systems, ADRs, README) are committed; backlogs, handoffs, reviews and other process notes go in `dev/`. Public facts from them, such as known limits, belong in the README.

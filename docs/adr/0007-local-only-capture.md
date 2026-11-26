@@ -5,4 +5,4 @@
 
 ## Decision
 
-A capture is a data card stored in SQLite. An optional photo with the overlay may follow; it is in the backlog. Nothing is uploaded.
+A capture is a data card stored in SQLite. An optional photo with the overlay may follow later. Nothing is uploaded.

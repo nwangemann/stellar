@@ -20,4 +20,4 @@ The Layers mode returns with bright satellites, led by the ISS. A satellite's pl
 - SGP4 is accurate to about 1 km at the TLE's epoch and drifts by a few km a day for low orbits. For the ISS, at 7.7 km/s, a few days old means a few seconds early or late on the sky; a week old can be tens of seconds; across a reboost, more. The orbit's age must be shown, with a warning past the 7-day limit.
 - The bundled snapshot ages with the app build and is only good enough to show roughly where a satellite is.
 - satellite.js ships ES modules only, so Jest maps it to its `dist` file and transforms it.
-- Tests check SGP4 against the Vallado (2006) reference case 00005, not against a live pass. Checking a pass against the real sky is in backlog task 8.
+- Tests check SGP4 against the Vallado (2006) reference case 00005, not against a live pass. A pass has not yet been checked against the real sky; that needs a phone.

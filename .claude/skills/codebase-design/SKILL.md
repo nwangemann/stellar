@@ -13,7 +13,7 @@ Adapted from [mattpocock/skills](https://github.com/mattpocock/skills) at `d6539
 - `src/core` stays free of React and Expo imports, and native modules stay behind `src/services`, even with one adapter.
 - Keep tests minimal. The testing advice is not a reason to add or rewrite them.
 - Use DESIGN-IT-TWICE.md only when the user asks for subagents.
-- Refactoring ideas outside the current step go in `docs/backlog`.
+- Refactoring ideas outside the current step go in `dev/backlog`.
 
 Design **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface. Use this language and these principles wherever code is being designed or restructured. The aim is leverage for callers, locality for maintainers, and testability for everyone.
 

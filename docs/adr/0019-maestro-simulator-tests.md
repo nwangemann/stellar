@@ -5,7 +5,7 @@
 
 ## Context
 
-Unit tests cover `src/core` and components, but nothing proves the app launches and the main flow works end to end. Backlog task 3 wants one command for that, on the iOS simulator first (ADR 11). The app runs as a development build (ADR 2), so a test must get past the dev-client launcher to the app.
+Unit tests cover `src/core` and components, but nothing proves the app launches and the main flow works end to end. One command was wanted for that, on the iOS simulator first (ADR 11). The app runs as a development build (ADR 2), so a test must get past the dev-client launcher to the app.
 
 ## Decision
 

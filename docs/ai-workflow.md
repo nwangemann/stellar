@@ -7,9 +7,12 @@ Most of Stellar was written by an AI coding agent (Claude Code), steered by a pe
 The agent reads these at the start of every session, so each session can start cold instead of relying on chat history.
 
 - [`CLAUDE.md`](../CLAUDE.md) and [`AGENTS.md`](../AGENTS.md): the house rules and the session routine. `src/core` imports no React or Expo; docs change with the code; Expo APIs are looked up in the installed types and the versioned docs, never coded from memory; packages are added with `npx expo install`.
-- [The backlog](backlog/README.md): a short index with a **Next step** line, and one file per task with its steps as checkboxes, the files each step needs and how to prove it. Ideas that are not next go under **Later**, not into the current step.
-- [The handoff](handoff.md): what is built, what has been verified and how, and the known limits.
-- [Decision records](adr/): seventeen short ADRs, from the stack to the details zoom. A later session reads the decision instead of making it again.
+- The backlog: a short index with a **Next step** line, and one file per task with its steps as checkboxes, the files each step needs and how to prove it. Ideas that are not next go under **Later**, not into the current step.
+- The handoff: what is built, what has been verified and how, and the known limits.
+
+The backlog, the handoff and the dated reviews are working notes kept outside the repository, in a git-ignored `dev/` folder, so the repository holds only the project and its documentation. The facts in them that a reader needs, such as known limits and what is verified, are in the [README](../README.md#status).
+
+- [Decision records](adr/): nineteen short ADRs, from the stack to the Maestro simulator tests. A later session reads the decision instead of making it again.
 - [System docs](systems/): one page per feature folder, with the rules that are easy to break (for example, never capture a JS-thread object in a worklet).
 - The `stellar-dev` skill (`.claude/skills/stellar-dev`): how to set up the shell, run the simulator and the checks, and the gotchas found so far.
 - `npm run check`: types, lint, formatting, unit tests and a docs check that fails if `package.json` and [dependencies.md](dependencies.md) disagree or a feature folder has no system doc. A Husky hook runs it before every commit, commitlint checks the message, and [CI](../.github/workflows/check.yml) runs it on pull requests and `main`.
@@ -30,4 +33,4 @@ The agent reads these at the start of every session, so each session can start c
 
 ## What is left to a person
 
-[Backlog task 8](backlog/device.md) collects everything a simulator cannot judge: the camera image, haptics and permission prompts, the sensors against a known star, compass alignment and the camera's field of view, the Sun warning, looks over the live camera, frame rate and battery, a release build, and Android. It is deliberately last and never blocks other work.
+The last backlog task collects everything a simulator cannot judge: the camera image, haptics and permission prompts, the sensors against a known star, compass alignment and the camera's field of view, the Sun warning, looks over the live camera, frame rate and battery, a release build, and Android. It is deliberately last and never blocks other work.
