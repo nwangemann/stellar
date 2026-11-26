@@ -9,7 +9,7 @@ ADR 13 computes positions without a library. That is simple for stars, but the M
 
 ## Decision
 
-Use `astronomy-engine` (MIT, pure JavaScript, no dependencies) instead of our own formulas. Only `src/core/astro/bodies.ts` imports it. Stars keep our own precession, and all objects share `toAltAz`.
+Use `astronomy-engine` (MIT, pure JavaScript, no dependencies) instead of hand-written formulas. Only `src/core/astro/bodies.ts` imports it. Stars keep the hand-written precession, and all objects share `toAltAz`.
 
 ## Consequences
 

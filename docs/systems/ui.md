@@ -2,7 +2,7 @@
 
 `src/ui/tokens` holds the standard and night themes. A test checks that every night color has no green or blue.
 
-Components: Text, GlassPanel, Button, IconButton, Chip, Reticle, Sheet, ModeSwitcher, Slider and ScreenHeader. They read the theme through `useTheme`. System-drawn controls may ignore the theme, so check night vision on iOS when adding one.
+Components: Text, GlassPanel, Button, IconButton, Chip, Reticle, Sheet, ModeSwitcher, Slider and ScreenHeader. They read the theme through `useTheme`. System-drawn controls may ignore the theme, so check night vision on iOS when adding one. A `Chip` is a tab or a switch; a switch that is off keeps an outline so it still reads as a control.
 
 On the sky screen, Search, Time travel, Logbook, Settings and, while following the phone, compass alignment are round `IconButton`s at the top right, with the same surface as other buttons. Their icons are drawn with views, so there is no icon package.
 

@@ -5,7 +5,7 @@
 
 ## Context
 
-We want playful alternatives to the interface without changing the current one.
+Playful alternatives to the interface were wanted without changing the existing one.
 
 ## Decision
 

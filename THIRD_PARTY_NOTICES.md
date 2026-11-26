@@ -4,7 +4,7 @@ Packages installed from npm keep their own licences; see [docs/dependencies.md](
 
 ## Expo project template
 
-Parts of this project, including the starter images in `assets/`, came from the Expo template.
+Parts of the project configuration came from the Expo template. The images in `assets/` are original to Stellar.
 
 ```text
 The MIT License (MIT)

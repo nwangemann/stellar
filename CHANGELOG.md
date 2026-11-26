@@ -21,3 +21,7 @@
 - The star screen links to its constellation, and logbook rows open details.
 - Details zoom out of their object in the sky, and back into it when closed.
 - Fixed: Triangulum Australe is matched to its stars.
+- An app icon of the reticle locked on to a figure replaces the Expo template icon. Android uses it too, in place of the template adaptive icon.
+- Settings switches that are off keep an outline, so they still read as controls.
+- Removed TypeDoc and the unused splash image.
+- Layers is hidden from the mode strip until it has its first layer.

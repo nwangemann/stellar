@@ -5,4 +5,4 @@
 
 ## Decision
 
-Not in the original plan. Web lets us see the UI without native toolchains. It is not a release target: camera is stubbed and the logbook is in memory.
+Added after the first plan. The web build shows the UI without native toolchains. It is not a release target: camera is stubbed and the logbook is in memory.

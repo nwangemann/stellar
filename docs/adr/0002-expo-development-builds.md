@@ -5,4 +5,4 @@
 
 ## Decision
 
-Use Expo with Continuous Native Generation and development builds. Expo Go cannot load our native modules. iOS first, Android supported.
+Use Expo with Continuous Native Generation and development builds. Expo Go cannot load the native modules Stellar needs. iOS first, Android supported.

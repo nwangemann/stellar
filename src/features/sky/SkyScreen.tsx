@@ -371,7 +371,7 @@ export function SkyScreen() {
             onDone={() => setAlignOpen(false)}
           />
         ) : (
-          <Dock mode={mode} onMode={onMode} target={target} onIdentify={onIdentify} />
+          <Dock mode={plugin.id} onMode={onMode} target={target} onIdentify={onIdentify} />
         )}
       </View>
       {leading && wantedMark && wantedUp && !zooming ? (

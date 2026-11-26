@@ -15,7 +15,10 @@ export function Chip({ label, selected, onPress, role = 'switch' }: Props) {
         onPress={onPress}
       >
         {({ pressed }) => (
-          <SkinSurface kind={selected ? 'chipOn' : 'chip'} pressed={pressed}>
+          <SkinSurface
+            kind={selected ? 'chipOn' : role === 'switch' ? 'quiet' : 'chip'}
+            pressed={pressed}
+          >
             <Text style={{ color: selected ? t.color.onAccent : t.color.text }}>{label}</Text>
           </SkinSurface>
         )}
@@ -31,6 +34,9 @@ export function Chip({ label, selected, onPress, role = 'switch' }: Props) {
         justifyContent: 'center',
         paddingHorizontal: t.space.md,
         borderRadius: t.radius.pill,
+        // A switch that is off keeps an outline, so it still reads as a control.
+        borderWidth: 1,
+        borderColor: selected || role === 'tab' ? 'transparent' : t.color.glassBorder,
         backgroundColor: selected ? t.color.accent : 'transparent',
       }}
     >

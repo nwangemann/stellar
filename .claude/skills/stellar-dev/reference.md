@@ -10,7 +10,7 @@ If another session is using a simulator, use a different one. To test without re
 
 - `npx expo prebuild` regenerates `ios/` from scratch. Run `pod install` again and recreate `ios/.xcode.env.local` with `export NODE_BINARY=$HOME/.local/node/bin/node`.
 - Night vision hides the iOS status bar through `UIViewControllerBasedStatusBarAppearance: false` plus expo-status-bar (ADR 12). Do not set `statusBarHidden` on the navigator.
-- `origin` is a private GitHub repo. `gh` is in /opt/homebrew/bin. Unpushed work exists only on this Mac.
+- `origin` is a public GitHub repo, so nothing personal goes in commits or docs. `gh` is in /opt/homebrew/bin. Unpushed work exists only on this Mac.
 - ESLint is pinned to version 9.
-- `file-system` was removed on purpose until phase 5.
+- `expo-file-system` was removed on purpose; add it back with photo capture.
 - Keep the project in a path without spaces.

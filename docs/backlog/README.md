@@ -2,7 +2,7 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step: none ready. Task 3 needs the user's OK, and task 8 comes last.**
+**Next step: none ready. Task 3 needs the owner's OK, and task 8 comes last.**
 
 ## Queue
 
@@ -17,8 +17,8 @@ Sizes are rough estimates in steps. A step should fit in one session.
 
 - Photo capture, the unbuilt part of phase 3.
 - Ask about this star: Claude answers from bundled data. Needs a small backend to hold the API key.
-- Satellite passes as the first real layer.
-- Simplify, to be decided: hide Layers until it has content; freeze or cut Glass and Needlepoint; go iOS-only.
+- Satellite passes as the first real layer, then show Layers again. Planned next.
+- Simplify, to be decided: freeze or cut Glass and Needlepoint; go iOS-only.
 
 ## Rules
 

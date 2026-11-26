@@ -1,6 +1,7 @@
 {
   "name": "stellar",
   "version": "0.1.0",
+  "description": "Point a phone at the night sky to identify stars, constellations and planets, with stories from many sky cultures. Expo, React Native and Skia.",
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/metro-runtime": "~58.0.17",
@@ -46,7 +47,6 @@
     "jest-expo": "~58.0.15",
     "prettier": "^3.10.1",
     "test-renderer": "^1.3.1",
-    "typedoc": "^0.28.20",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -60,7 +60,6 @@
     "format:check": "prettier --check .",
     "test": "jest",
     "docs:check": "node scripts/docs-check.mjs",
-    "docs:api": "typedoc",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run docs:check",
     "prepare": "husky || true"
   },

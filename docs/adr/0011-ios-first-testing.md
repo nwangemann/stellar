@@ -5,7 +5,7 @@
 
 ## Decision
 
-Test on the iOS simulator and on a physical iOS device, which the user has. Android testing comes later, on an emulator, with no physical Android devices. This narrows phase 4 of the original plan: Android no longer blocks v0.1.0. Android stays a supported target in code.
+Test on the iOS simulator and on a physical iPhone. Android testing comes later, on an emulator; no physical Android device is available. Android does not block v0.1.0. Android stays a supported target in code.
 
 ## Consequence
 

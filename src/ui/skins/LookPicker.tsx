@@ -5,7 +5,7 @@ import { SKINS, themeForSkin, type SkinId } from '../tokens/tokens';
 import { useTheme } from '../useTheme';
 
 const LOOKS: Record<SkinId, { label: string; detail: string }> = {
-  default: { label: 'Default', detail: 'The original Stellar' },
+  default: { label: 'Default', detail: 'Dark, clear and simple' },
   starship: { label: 'Starship', detail: 'Cosmic glow, with a passenger' },
   glass: { label: 'Glass & chrome', detail: 'Liquid, clear and shiny' },
   needlepoint: { label: 'Needlepoint', detail: 'The heavens, hand-stitched' },

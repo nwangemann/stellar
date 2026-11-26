@@ -52,5 +52,4 @@ npm is recorded in ADR 0008. `npm run docs:check` fails if this table and packag
 | `jest-expo`                       | Quality tooling | MIT        | 0001 |
 | `prettier`                        | Quality tooling | MIT        | 0001 |
 | `test-renderer`                   | Quality tooling | MIT        | 0001 |
-| `typedoc`                         | API reference   | Apache-2.0 | 0008 |
 | `typescript`                      | Language        | Apache-2.0 | 0001 |
