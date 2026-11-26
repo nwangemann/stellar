@@ -28,3 +28,4 @@
 - Layers is hidden from the mode strip until it has its first layer.
 - Layers is back, with bright satellites led by the ISS: they move smoothly and with time travel, and their card shows height, speed, sunlight and the orbit data's age.
 - Satellites have a details screen with their next visible pass, and search and find in sky work for them.
+- Fixed: find in sky turned to where a satellite was up to a minute earlier, so the reticle missed it.

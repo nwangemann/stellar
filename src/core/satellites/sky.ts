@@ -1,4 +1,4 @@
-import type { Moment } from '../astro/coordinates';
+import type { AltAz, Moment } from '../astro/coordinates';
 import { altAzVector, type Vector } from '../astro/vector';
 import type { SatelliteMark, SkyObject } from '../catalog/types';
 import { satelliteView, type Satellite } from './orbit';
@@ -36,4 +36,14 @@ export function satelliteDirections(
     if (view) directions[s.id] = altAzVector(view.position);
   }
   return directions;
+}
+
+/**
+ * Where an object is at a moment, to turn the view to it. `createSky` places satellites once a
+ * minute, and the ISS moves degrees in that time, so they are placed again; anything else keeps
+ * the position it has.
+ */
+export function placeAt(object: SkyObject, moment: Moment): AltAz {
+  if (object.kind !== 'satellite') return object.position;
+  return satelliteView(object.satellite, moment)?.position ?? object.position;
 }

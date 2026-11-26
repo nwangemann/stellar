@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 import { MARKS } from '@/core/catalog/sky';
 import { nextPass } from '@/core/satellites/pass';
-import { satelliteMarks } from '@/core/satellites/sky';
+import { placeAt, satelliteMarks } from '@/core/satellites/sky';
 import type { Target } from '@/core/layers/types';
 import { dragAlignment } from '@/core/pose/alignment';
 import { applyDrag, facing, INITIAL_POSE, turnStart, type Pose } from '@/core/pose/pose';
@@ -159,14 +159,16 @@ export function SkyScreen() {
     });
     const aim = sky.find((o) => o.id === wanted.aimId);
     if (!aim || tracking || wanted.byArrow) return;
-    const to = facing(aim.position);
+    // Where it will be when the turn ends: satellites keep moving while the sky's moment waits.
+    const date = new Date(Date.now() + offsetMs + TURN_MS);
+    const to = facing(placeAt(aim, { observer: moment.observer, date }));
     scheduleOnUI(() => {
       'worklet';
       pose.value = turnStart(pose.value, to);
       // Instant with Reduce Motion, as all timings are by default.
       pose.value = withTiming({ ...to }, { duration: TURN_MS, easing: Easing.inOut(Easing.cubic) });
     });
-  }, [wanted, focused, zooming, tracking, sky, pose, set]);
+  }, [wanted, focused, zooming, tracking, sky, offsetMs, moment.observer, pose, set]);
   const leading = wanted && !reached && !aligning && (tracking || wanted.byArrow) ? wanted : null;
   const wantedMark = useMemo(
     () => allMarks.find((m) => m.id === wantedId) ?? null,
