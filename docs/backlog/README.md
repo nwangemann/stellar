@@ -2,7 +2,7 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step: none ready.** Task 3 needs the owner's OK to install Java and Maestro; task 8 waits for the owner's go-ahead. Otherwise pick from **Later**.
+**Next step: 3.2**, the main flow in [simulator tests](simulator-tests.md). Task 8 waits for the owner's go-ahead.
 
 Prioritized 2026-11-25 by immediate value: quick visible fixes first, then the feature that brings back the hidden Layers mode.
 
@@ -10,10 +10,10 @@ Prioritized 2026-11-25 by immediate value: quick visible fixes first, then the f
 
 Sizes are rough estimates in steps. A step should fit in one session.
 
-| #   | Task                                  | Steps | Status     | Needs first                        |
-| --- | ------------------------------------- | ----- | ---------- | ---------------------------------- |
-| 3   | [Simulator tests](simulator-tests.md) | 3     | Needs user | OK to install Java and Maestro     |
-| 8   | [On a real device](device.md)         | 8     | Last       | Feature work done, user's go-ahead |
+| #   | Task                                  | Steps | Status | Needs first                        |
+| --- | ------------------------------------- | ----- | ------ | ---------------------------------- |
+| 3   | [Simulator tests](simulator-tests.md) | 3     | Ready  | Nothing                            |
+| 8   | [On a real device](device.md)         | 8     | Last   | Feature work done, user's go-ahead |
 
 ## Later, not yet prioritized
 

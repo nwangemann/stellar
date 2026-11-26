@@ -13,7 +13,9 @@ description: Set up the shell, run, check and simulate the Stellar Expo app, wit
 | Git 2.50.1                     | Installed with Xcode                                |
 | Xcode 26.6, iOS 26.5 simulator | Installed                                           |
 | CocoaPods 1.17.0, Homebrew     | Installed in /opt/homebrew                          |
-| Android Studio, SDK, Java      | Not installed                                       |
+| Java 17 (Homebrew `openjdk@17`) | Installed 2026-11-26, keg-only, not on the path     |
+| Maestro CLI 2.12.1             | Installed 2026-11-26 in /opt/homebrew               |
+| Android Studio, SDK            | Not installed                                       |
 
 Run this first in every new terminal (shell settings were not changed):
 
@@ -22,11 +24,19 @@ export PATH="$HOME/.local/node/bin:/opt/homebrew/bin:$PATH"
 export LANG=en_US.UTF-8
 ```
 
+For Maestro, also:
+
+```bash
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+export PATH="$JAVA_HOME/bin:$PATH"
+```
+
 ## Commands
 
 - `npm run ios`: build and run on the simulator. Starts Metro unless port 8081 is already serving it.
 - `npm run web`: development preview.
 - `npm run check`: types, lint, formatting, tests and docs. Required before finishing.
+- `npm run test:e2e`: runs the Maestro flows in `.maestro/` on the simulator. Needs Metro on 8081 and the Java exports. With two simulators booted, add `-- --device <UDID>`.
 - `npx prettier --write <files>`: fixes formatting failures.
 - `npx expo-doctor`: needs Homebrew on the path.
 

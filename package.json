@@ -60,6 +60,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest",
+    "test:e2e": "maestro test .maestro",
     "docs:check": "node scripts/docs-check.mjs",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run docs:check",
     "prepare": "husky || true"

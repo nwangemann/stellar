@@ -1,0 +1,22 @@
+# Launches the development build against Metro on port 8081 and checks
+# that the sky screen is showing. Run with `npm run test:e2e`.
+appId: com.nate.stellar
+---
+- stopApp
+- openLink: stellar://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+# Dev-client launcher and first-run prompts, shown only sometimes.
+- tapOn:
+    text: 'http://localhost:8081'
+    optional: true
+- tapOn:
+    text: 'Continue'
+    optional: true
+- tapOn:
+    text: 'Allow While Using App'
+    optional: true
+- extendedWaitUntil:
+    visible: 'Identify'
+    timeout: 60000
+- assertVisible: 'Stars'
+- assertVisible: 'Constellations'
+- assertVisible: 'Layers'

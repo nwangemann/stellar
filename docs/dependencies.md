@@ -54,3 +54,13 @@ npm is recorded in ADR 0008. `npm run docs:check` fails if this table and packag
 | `prettier`                        | Quality tooling | MIT        | 0001 |
 | `test-renderer`                   | Quality tooling | MIT        | 0001 |
 | `typescript`                      | Language        | Apache-2.0 | 0001 |
+
+## Tools outside npm
+
+Installed with Homebrew, not in package.json. Exports and commands are in the `stellar-dev` skill.
+
+| Tool                  | Version   | Purpose                        | Licence    | ADR  |
+| --------------------- | --------- | ------------------------------ | ---------- | ---- |
+| Maestro CLI           | 2.12.1    | Simulator flows in `.maestro/` | Apache-2.0 | 0019 |
+| OpenJDK 17 (Homebrew) | 17.0.21.1 | Java for Maestro               | GPL-2.0-CE | 0019 |
+| OpenJDK 27 (Homebrew) | 27.0.1.1  | Pulled in by the Maestro tap   | GPL-2.0-CE | 0019 |

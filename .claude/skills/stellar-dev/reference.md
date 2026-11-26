@@ -6,6 +6,19 @@ If another session is using a simulator, use a different one. To test without re
 
 - Two people driving the simulator at once looks like a bug: stray drags and mode changes. Relaunch before debugging.
 
+## Maestro
+
+Installed 2026-11-26 (ADR 19):
+
+```bash
+brew install openjdk@17
+brew tap mobile-dev-inc/tap
+brew trust --formula mobile-dev-inc/tap/maestro
+brew install mobile-dev-inc/tap/maestro
+```
+
+The tap also pulls in Homebrew's latest `openjdk`; the exports use 17. Flows open the dev-client deep link, not `launchApp`, and tap past the launcher and first-run prompts with `optional: true`.
+
 ## Other
 
 - `npx expo prebuild` regenerates `ios/` from scratch. Run `pod install` again and recreate `ios/.xcode.env.local` with `export NODE_BINARY=$HOME/.local/node/bin/node`.
