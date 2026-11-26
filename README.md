@@ -5,7 +5,9 @@
 Point a phone at the night sky and see what is there. Stellar draws the real stars, constellations, Moon, planets and bright satellites over the camera, locks on to whatever is under the reticle, and tells its story: catalog facts, known exoplanets, research papers, and the stories other cultures tell about it. Built with Expo, React Native and Skia.
 
 <p>
-  <img src="docs/images/sky.jpg" alt="The sky screen locked on to Orion: constellation lines, the Moon, a glowing reticle and a card reading Orion, Hunter, brightest line star Rigel, stories from 6 cultures" width="200">
+  <img src="docs/images/sky.jpg" alt="The sky screen locked on to Orion: constellation lines, the Moon, a glowing reticle, a card reading Orion, Hunter, brightest line star Rigel, stories from 6 cultures, and the Stars, Constellations and Layers modes" width="200">
+  <img src="docs/images/satellite.jpg" alt="Layers mode with time travel set to 5:41 PM, locked on to the ISS: a card reading ISS (ZARYA), height 419 km, speed 7.7 km/s, sunlit, orbit data 1 day old, and a button for the next pass and details" width="200">
+  <img src="docs/images/pass.jpg" alt="The ISS details screen: next visible pass appearing at 5:38 PM 10 degrees northwest, highest at 5:40 PM 21 degrees north, disappearing at 5:41 PM 19 degrees northeast, and its height, speed and sunlight right now" width="200">
   <img src="docs/images/mythology.jpg" alt="Orion's details on the Mythology tab: tabs for Greek, Egyptian, Sámi, Norse, Hawaiian and Chinese, the figure, and the Egyptian story of Sah with a link to its source" width="200">
   <img src="docs/images/starship.jpg" alt="The same sky in the Starship look: pink constellation lines over a purple nebula, a green reticle and a small green alien at the edge" width="200">
   <img src="docs/images/night.jpg" alt="The same sky in night vision: every line, mark and control in pure red on black" width="200">
