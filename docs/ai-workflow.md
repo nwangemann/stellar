@@ -24,7 +24,7 @@ The agent reads these at the start of every session, so each session can start c
 
 ## What the agent verified
 
-- **Unit tests** for coordinates, precession, Sun, Moon and planet positions against JPL Horizons, projection, the lock-on state machine, sensor orientation and smoothing, compass alignment, the find-in-sky arrow, search, star and body facts, and the night palette: 194 tests in 21 suites.
+- **Unit tests** for coordinates, precession, Sun, Moon and planet positions against JPL Horizons, projection, the lock-on state machine, sensor orientation and smoothing, compass alignment, the find-in-sky arrow, search, star and body facts, satellite orbits, sunlight, passes and the orbit fallback order, and the night palette: 209 tests in 25 suites.
 - **The simulator.** Each visible step was run in a development build on the iOS simulator; the screenshots in the README come from it.
 - **Measurement.** The sky refresh was timed on the simulator before and after it was rebuilt around a single rotation per refresh.
 
