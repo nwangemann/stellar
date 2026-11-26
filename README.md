@@ -74,7 +74,7 @@ Android is configured but not yet built or tested.
 
 ## Status
 
-The sky, satellites, details, search, find in sky, time travel, looks and logbook are built and checked in tests and on the iOS simulator. The camera, sensors, compass alignment, haptics and permission prompts need a physical iPhone and have not yet been tried on one, and satellite passes have not been checked against the real sky; those checks are the last task in the [backlog](docs/backlog/README.md). Photo capture is not built. Current state is in the [handoff](docs/handoff.md); the latest review is [docs/reviews/2026-11-25.md](docs/reviews/2026-11-25.md).
+The sky, satellites, details, search, find in sky, time travel, looks and logbook are built and checked in tests and on the iOS simulator. The camera, sensors, compass alignment, haptics and permission prompts need a physical iPhone and have not yet been tried on one, and satellite passes have not been checked against the real sky; those checks are the last task in the [backlog](docs/backlog/README.md). Photo capture is not built. Current state is in the [handoff](docs/handoff.md); the latest review is [docs/reviews/2026-11-26.md](docs/reviews/2026-11-26.md). Phase 1 is complete and tagged `v0.1.0`.
 
 ## Built with an AI agent
 

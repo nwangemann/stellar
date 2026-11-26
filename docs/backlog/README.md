@@ -2,24 +2,21 @@
 
 The long-term to-do list. This index stays short; detail lives in one file per task.
 
-**Next step:** none ready. Task 8 waits for the owner's go-ahead; otherwise pick from **Later**, starting with the owner's call on simplifying.
-
-Prioritized 2026-11-25 by immediate value: quick visible fixes first, then the feature that brings back the hidden Layers mode.
+**Next step:** none ready. Phase 1 is complete and tagged `v0.1.0` (2026-11-26). The next phase starts with task 8 on a phone, when the owner has one at hand, then picks from **Later**. Closing review: [reviews/2026-11-26](../reviews/2026-11-26.md).
 
 ## Queue
 
 Sizes are rough estimates in steps. A step should fit in one session.
 
-| #   | Task                          | Steps | Status | Needs first                        |
-| --- | ----------------------------- | ----- | ------ | ---------------------------------- |
-| 8   | [On a real device](device.md) | 8     | Last   | Feature work done, user's go-ahead |
+| #   | Task                          | Steps | Status     | Needs first               |
+| --- | ----------------------------- | ----- | ---------- | ------------------------- |
+| 8   | [On a real device](device.md) | 8     | Next phase | A phone, owner's go-ahead |
 
 ## Later, not yet prioritized
 
 In rough order of value:
 
-- Simplify, to be decided by the owner: freeze or cut Glass and Needlepoint; go iOS-only. Cuts the cost of every later feature.
-- Set the GitHub description and topics. The owner's call, since it is public.
+- Reduce the looks. The owner kept all four at the end of phase 1 (2026-11-26) and expects to reduce them later; decide with the device results in hand. Going iOS-only is part of the same call.
 - Photo capture, the unbuilt part of phase 3. The simulator has no camera, so most of it can only be proven in task 8.
 - Ask about this star: Claude answers from bundled data. Needs a small backend to hold the API key.
 

@@ -2,11 +2,11 @@
 
 Snapshot: 2026-11-26. Check the install state again before relying on it.
 
-Tasks are in the [backlog](backlog/README.md); setup is in the `stellar-dev` skill. The latest review is [reviews/2026-11-25.md](reviews/2026-11-25.md).
+Tasks are in the [backlog](backlog/README.md); setup is in the `stellar-dev` skill. The latest review is [reviews/2026-11-26.md](reviews/2026-11-26.md).
 
-## Before v0.1.0
+## Phase 1 complete
 
-Device checks, tuning and calibration are deferred to the end of development, in [backlog task 8](backlog/device.md). Tag v0.1.0 only after they pass.
+Phase 1 is tagged `v0.1.0` (2026-11-26). The tag marks the end of the phase, not a phone-verified release. Device checks, tuning and calibration come first in the next phase, in [backlog task 8](backlog/device.md); a release after they pass gets the next version.
 
 ## Status
 

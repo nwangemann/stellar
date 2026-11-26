@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased (0.1.0)
+## 0.1.0 (2026-11-26)
+
+The end of phase 1. Tagged before the device pass, so nothing here has run on a physical phone.
 
 - Scaffold, design system and app shell with a simulated sky.
 - Reticle lock-on, info sheet and stub logbook.

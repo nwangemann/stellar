@@ -1,6 +1,6 @@
 # 8. On a real device
 
-Goal: check everything that needs a real device in one pass, after feature development. Tag v0.1.0 when it passes.
+Goal: check everything that needs a real device in one pass, after feature development. Phase 1 was tagged v0.1.0 before it, on 2026-11-26; a release after it passes gets the next version.
 
 Deferred on purpose: the app is experimental, and building it out matters more than pinpoint accuracy. Until then, use sensible guesses for anything only a device can settle, and add the check here. Do not start this task, or hold up another for it, until the owner says so.
 
